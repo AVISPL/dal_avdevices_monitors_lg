@@ -20,7 +20,6 @@ public class LgLCDDevice extends  SocketCommunicator implements Controller, Moni
     public LgLCDDevice(){
         super();
 
-
         this.setPort(9761);
         this.monitorID = 1;
 
