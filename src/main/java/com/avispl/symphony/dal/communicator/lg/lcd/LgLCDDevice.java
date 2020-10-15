@@ -5,12 +5,13 @@ import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.api.dal.dto.monitor.Statistics;
 import com.avispl.symphony.api.dal.monitor.Monitorable;
+import com.avispl.symphony.dal.communicator.SocketCommunicator;
 
 import java.util.*;
 
 import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.*;
 
-public class LgLCDDevice extends  SocketCommunicator implements Controller, Monitorable {
+public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
     private int monitorID;
 
