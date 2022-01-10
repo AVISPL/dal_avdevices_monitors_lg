@@ -1,6 +1,5 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
