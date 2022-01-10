@@ -363,21 +363,4 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		return null;
 	}
 
-	/**
-	 * This method is used to update historical extended statistic and static extended statistics
-	 *
-	 * @param stats
-	 */
-	private void updateLocalExtStats(Map<String, String> stats) {
-		Map<String, String> historicalExtStatsDTO = new HashMap<>();
-		Map<String, String> staticExtStatsDTO = new HashMap<>();
-
-		for (LGLCDMonitoringMetric metric : LGLCDMonitoringMetric.values()) {
-			if (metric.isHistorical()) {
-				historicalExtStatsDTO.put(metric.name(), stats.get(metric.name() + " TimeMillis: " + System.currentTimeMillis()));
-			} else {
-				staticExtStatsDTO.put(metric.name(), stats.get(metric.name()));
-			}
-		}
-	}
 }
