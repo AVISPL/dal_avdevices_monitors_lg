@@ -267,6 +267,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			fanStatusNames fanStatus = (fanStatusNames) digestResponse(response, commandNames.FANSTATUS);
 
 			return fanStatus;
+
 		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return fanStatusNames.NO_FAN;
