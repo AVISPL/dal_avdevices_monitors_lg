@@ -318,6 +318,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				byte[] reply = Arrays.copyOfRange(response,7,9);
 
 				switch (expectedResponse) {
+
 					case POWER: {
 
 						for(Map.Entry<powerStatusNames,byte[]> entry: powerStatus.entrySet())
