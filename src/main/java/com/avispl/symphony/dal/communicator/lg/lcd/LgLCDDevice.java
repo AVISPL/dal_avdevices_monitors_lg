@@ -39,7 +39,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	/**
 	 * Constructor set the TCP/IP port to be used as well the default monitor ID
 	 */
-	public LgLCDDevice(){
+	public LgLCDDevice() {
 		super();
 
 		this.setPort(9761);
@@ -53,14 +53,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is recalled by Symphony to control specific property
+	 *
 	 * @param controllableProperty This is the property to be controled
 	 */
 	@Override
 	public void controlProperty(ControllableProperty controllableProperty) throws Exception {
-		if (controllableProperty.getProperty().equals(controlProperties.power.name())){
-			if(controllableProperty.getValue().toString().equals("1")){
+		if (controllableProperty.getProperty().equals(controlProperties.power.name())) {
+			if (controllableProperty.getValue().toString().equals("1")) {
 				powerON();
-			}else if(controllableProperty.getValue().toString().equals("0")){
+			} else if (controllableProperty.getValue().toString().equals("0")) {
 				powerOFF();
 			}
 		}
@@ -68,6 +69,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is recalled by Symphony to control a list of properties
+	 *
 	 * @param controllableProperties This is the list of properties to be controlled
 	 * @return byte This returns the calculated xor checksum.
 	 */
@@ -87,6 +89,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is recalled by Symphony to get the list of statistics to be displayed
+	 *
 	 * @return List<Statistics> This return the list of statistics.
 	 */
 	@Override
@@ -94,8 +97,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		ExtendedStatistics extendedStatistics = new ExtendedStatistics();
 
 		//controllable statistics
-		Map<String, String> controllable = new HashMap<String, String>(){{
-			put(controlProperties.power.name(),"Toggle");
+		Map<String, String> controllable = new HashMap<String, String>() {{
+			put(controlProperties.power.name(), "Toggle");
 		}};
 
 		//statistics
@@ -106,13 +109,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 		try {
 			power = getPower().name();
-			if(power.compareTo("ON") == 0) {
+			if (power.compareTo("ON") == 0) {
 				statistics.put(statisticsProperties.power.name(), "1");
-			}else if(power.compareTo("OFF") == 0)
-			{
+			} else if (power.compareTo("OFF") == 0) {
 				statistics.put(statisticsProperties.power.name(), "0");
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getPower", e);
 			}
@@ -122,7 +124,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		//getting input status from device
 		try {
 			statistics.put(statisticsProperties.input.name(), getInput().name());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getInput", e);
 			}
@@ -132,7 +134,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		//getting temperature status from device
 		try {
 			statistics.put(statisticsProperties.temperature.name(), String.valueOf(getTemperature()));
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getInput", e);
 			}
@@ -142,7 +144,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		//getting fan status from device
 		try {
 			statistics.put(statisticsProperties.fan.name(), getFanStatus().name());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getFanStatus", e);
 			}
@@ -152,7 +154,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		//getting sync status from device
 		try {
 			statistics.put(statisticsProperties.signal.name(), getSyncStatus().name());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getSyncStatus", e);
 			}
@@ -169,6 +171,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is recalled by Symphony to get the current monitor ID (Future purpose)
+	 *
 	 * @return int This returns the current monitor ID.
 	 */
 	public int getMonitorID() {
@@ -177,6 +180,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is is used by Symphony to set the monitor ID (FUture purpose)
+	 *
 	 * @param monitorID This is the monitor ID to be set
 	 */
 	public void setMonitorID(int monitorID) {
@@ -185,12 +189,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to get the current display power status
+	 *
 	 * @return powerStatus This returns the calculated xor checksum.
 	 */
-	private powerStatusNames getPower(){
+	private powerStatusNames getPower() {
 
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), commands.get(commandNames.GET)));
 
 			powerStatusNames power = (powerStatusNames) digestResponse(response, commandNames.POWER);
 
@@ -200,8 +205,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				return power;
 			}
 
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("error during get power send", e);
 			}
@@ -209,11 +213,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		return null;
 	}
 
-	private void powerON(){
+	private void powerON() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.ON)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.ON)));
 
-			digestResponse(response,commandNames.POWER);
+			digestResponse(response, commandNames.POWER);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power OFF send", e);
@@ -221,11 +225,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 	}
 
-	private void powerOFF(){
+	private void powerOFF() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.OFF)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.OFF)));
 
-			digestResponse(response,commandNames.POWER);
+			digestResponse(response, commandNames.POWER);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power ON send", e);
@@ -235,16 +239,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to get the current display input
+	 *
 	 * @return inputNames This returns the current input.
 	 */
-	private inputNames getInput(){
+	private inputNames getInput() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.INPUT), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.INPUT), commands.get(commandNames.GET)));
 
 			inputNames input = (inputNames) digestResponse(response, commandNames.INPUT);
 
 			return input;
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return inputNames.OFF;
 		}
@@ -252,16 +257,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to get the current fan status
+	 *
 	 * @return fanStatusNames This returns the current display fan status.
 	 */
-	private fanStatusNames getFanStatus(){
+	private fanStatusNames getFanStatus() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.FANSTATUS), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.FANSTATUS), commands.get(commandNames.GET)));
 
 			fanStatusNames fanStatus = (fanStatusNames) digestResponse(response, commandNames.FANSTATUS);
 
 			return fanStatus;
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return fanStatusNames.NO_FAN;
 		}
@@ -269,16 +275,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to get the current display temperature
+	 *
 	 * @return int This returns the current display temperature.
 	 */
-	private Integer getTemperature(){
+	private Integer getTemperature() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.TEMPERATURE), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.TEMPERATURE), commands.get(commandNames.GET)));
 
 			Integer temperature = (Integer) digestResponse(response, commandNames.TEMPERATURE);
 
 			return temperature;
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return 0;
 		}
@@ -286,16 +293,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to get the current display sync status
+	 *
 	 * @return syncStatusNames This returns the current display sync status.
 	 */
-	private syncStatusNames getSyncStatus(){
+	private syncStatusNames getSyncStatus() {
 		try {
-			byte[]  response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.STATUS), signalStatus));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.STATUS), signalStatus));
 
 			syncStatusNames status = (syncStatusNames) digestResponse(response, commandNames.STATUS);
 
 			return status;
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return syncStatusNames.NO_SYNC;
 		}
@@ -303,77 +311,65 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	/**
 	 * This method is used to digest the response received from the device
+	 *
 	 * @param response This is the response to be digested
 	 * @param expectedResponse This is the expected response type to be compared with received
 	 * @return Object This returns the result digested from the response.
 	 */
-	private Object digestResponse(byte[] response, commandNames expectedResponse){
+	private Object digestResponse(byte[] response, commandNames expectedResponse) {
 
-		if(response[0] == commands.get(expectedResponse)[1])
-		{
-			byte[] responseStatus = Arrays.copyOfRange(response,5,7);
+		if (response[0] == commands.get(expectedResponse)[1]) {
+			byte[] responseStatus = Arrays.copyOfRange(response, 5, 7);
 
-			if(Arrays.equals(responseStatus,replyStatusCodes.get(replyStatusNames.OK))) {
+			if (Arrays.equals(responseStatus, replyStatusCodes.get(replyStatusNames.OK))) {
 
-				byte[] reply = Arrays.copyOfRange(response,7,9);
+				byte[] reply = Arrays.copyOfRange(response, 7, 9);
 
 				switch (expectedResponse) {
-
 					case POWER: {
 
-						for(Map.Entry<powerStatusNames,byte[]> entry: powerStatus.entrySet())
-						{
-							if(Arrays.equals(reply,entry.getValue()))
-							{
+						for (Map.Entry<powerStatusNames, byte[]> entry : powerStatus.entrySet()) {
+							if (Arrays.equals(reply, entry.getValue())) {
 								powerStatusNames power = entry.getKey();
 								return power;
 							}
 						}
 					}
 					case INPUT: {
-						for(Map.Entry<inputNames,byte[]> entry: inputs.entrySet())
-						{
-							if(Arrays.equals(reply,entry.getValue()))
-							{
+						for (Map.Entry<inputNames, byte[]> entry : inputs.entrySet()) {
+							if (Arrays.equals(reply, entry.getValue())) {
 								inputNames input = entry.getKey();
 								return input;
 							}
 						}
 					}
 					case TEMPERATURE: {
-						return Integer.parseInt(new String(reply),16);
+						return Integer.parseInt(new String(reply), 16);
 					}
 					case FANSTATUS: {
-						for(Map.Entry<fanStatusNames,byte[]> entry: fanStatusCodes.entrySet())
-						{
-							if(Arrays.equals(reply,entry.getValue()))
-							{
+						for (Map.Entry<fanStatusNames, byte[]> entry : fanStatusCodes.entrySet()) {
+							if (Arrays.equals(reply, entry.getValue())) {
 								fanStatusNames fanStatus = entry.getKey();
 								return fanStatus;
 							}
 						}
 					}
-					case STATUS:
-					{
-						reply = Arrays.copyOfRange(response,7,11);
-						for(Map.Entry<syncStatusNames,byte[]> entry: syncStatusCodes.entrySet())
-						{
-							if(Arrays.equals(reply,entry.getValue()))
-							{
+					case STATUS: {
+						reply = Arrays.copyOfRange(response, 7, 11);
+						for (Map.Entry<syncStatusNames, byte[]> entry : syncStatusCodes.entrySet()) {
+							if (Arrays.equals(reply, entry.getValue())) {
 								syncStatusNames syncStatus = entry.getKey();
 								return syncStatus;
 							}
 						}
 					}
 				}
-			}else if(Arrays.equals(responseStatus,replyStatusCodes.get(replyStatusNames.NG)))
-			{
+			} else if (Arrays.equals(responseStatus, replyStatusCodes.get(replyStatusNames.NG))) {
 				switch (expectedResponse) {
 					case FANSTATUS: {
-						return  fanStatusNames.NOT_SUPPORTED;
+						return fanStatusNames.NOT_SUPPORTED;
 					}
-					default:
-					{
+					default: {
 						if (this.logger.isErrorEnabled()) {
 							this.logger.error("error: NG reply: " + this.host + " port: " + this.getPort());
 						}
@@ -381,8 +377,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					}
 				}
 			}
-		}else
-		{
+		} else {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("error: Unexpected reply: " + this.host + " port: " + this.getPort());
 			}
