@@ -1,20 +1,9 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commands;
 import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.controlProperties;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.fanStatusCodes;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.fanStatusNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.inputNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.inputs;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.powerStatus;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.powerStatusNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.replyStatusCodes;
 import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.replyStatusNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.signalStatus;
 import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.syncStatusCodes;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.syncStatusNames;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,15 +181,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return powerStatus This returns the calculated xor checksum.
 	 */
-	private powerStatusNames getPower() {
+	private LgLCDConstants.powerStatusNames getPower() {
 
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.commands.get(commandNames.GET)));
 
-			powerStatusNames power = (powerStatusNames) digestResponse(response, commandNames.POWER);
+			LgLCDConstants.powerStatusNames power = (LgLCDConstants.powerStatusNames) digestResponse(response, LgLCDConstants.commandNames.POWER);
 
 			if (power == null) {
-				return powerStatusNames.OFF;
+				return LgLCDConstants.powerStatusNames.OFF;
 			} else {
 				return power;
 			}
@@ -215,9 +204,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	private void powerON() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.ON)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.ON)));
 
-			digestResponse(response, commandNames.POWER);
+			digestResponse(response, LgLCDConstants.commandNames.POWER);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power OFF send", e);
@@ -227,9 +216,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 	private void powerOFF() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.POWER), powerStatus.get(powerStatusNames.OFF)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.OFF)));
 
-			digestResponse(response, commandNames.POWER);
+			digestResponse(response, LgLCDConstants.commandNames.POWER);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power ON send", e);
@@ -242,16 +231,16 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return inputNames This returns the current input.
 	 */
-	private inputNames getInput() {
+	private LgLCDConstants.inputNames getInput() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.INPUT), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(commandNames.INPUT), LgLCDConstants.commands.get(commandNames.GET)));
 
-			inputNames input = (inputNames) digestResponse(response, commandNames.INPUT);
+			LgLCDConstants.inputNames input = (LgLCDConstants.inputNames) digestResponse(response, LgLCDConstants.commandNames.INPUT);
 
 			return input;
 		} catch (Exception e) {
 			System.out.println("Connect exception");
-			return inputNames.OFF;
+			return LgLCDConstants.inputNames.OFF;
 		}
 	}
 
@@ -260,17 +249,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return fanStatusNames This returns the current display fan status.
 	 */
-	private fanStatusNames getFanStatus() {
+	private LgLCDConstants.fanStatusNames getFanStatus() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.FANSTATUS), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.FANSTATUS), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 
-			fanStatusNames fanStatus = (fanStatusNames) digestResponse(response, commandNames.FANSTATUS);
+			LgLCDConstants.fanStatusNames fanStatus = (LgLCDConstants.fanStatusNames) digestResponse(response, LgLCDConstants.commandNames.FANSTATUS);
 
 			return fanStatus;
 
 		} catch (Exception e) {
 			System.out.println("Connect exception");
-			return fanStatusNames.NO_FAN;
+			return LgLCDConstants.fanStatusNames.NO_FAN;
 		}
 	}
 
@@ -281,9 +270,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private Integer getTemperature() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.TEMPERATURE), commands.get(commandNames.GET)));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.TEMPERATURE), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 
-			Integer temperature = (Integer) digestResponse(response, commandNames.TEMPERATURE);
+			Integer temperature = (Integer) digestResponse(response, LgLCDConstants.commandNames.TEMPERATURE);
 
 			return temperature;
 		} catch (Exception e) {
@@ -297,16 +286,16 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return syncStatusNames This returns the current display sync status.
 	 */
-	private syncStatusNames getSyncStatus() {
+	private LgLCDConstants.syncStatusNames getSyncStatus() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, commands.get(commandNames.STATUS), signalStatus));
+			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.STATUS), LgLCDConstants.signalStatus));
 
-			syncStatusNames status = (syncStatusNames) digestResponse(response, commandNames.STATUS);
+			LgLCDConstants.syncStatusNames status = (LgLCDConstants.syncStatusNames) digestResponse(response, LgLCDConstants.commandNames.STATUS);
 
 			return status;
 		} catch (Exception e) {
 			System.out.println("Connect exception");
-			return syncStatusNames.NO_SYNC;
+			return LgLCDConstants.syncStatusNames.NO_SYNC;
 		}
 	}
 
@@ -319,27 +308,27 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private Object digestResponse(byte[] response, commandNames expectedResponse) {
 
-		if (response[0] == commands.get(expectedResponse)[1]) {
+		if (response[0] == LgLCDConstants.commands.get(expectedResponse)[1]) {
 			byte[] responseStatus = Arrays.copyOfRange(response, 5, 7);
 
-			if (Arrays.equals(responseStatus, replyStatusCodes.get(replyStatusNames.OK))) {
+			if (Arrays.equals(responseStatus, LgLCDConstants.replyStatusCodes.get(replyStatusNames.OK))) {
 
 				byte[] reply = Arrays.copyOfRange(response, 7, 9);
 
 				switch (expectedResponse) {
 					case POWER: {
 
-						for (Map.Entry<powerStatusNames, byte[]> entry : powerStatus.entrySet()) {
+						for (Map.Entry<LgLCDConstants.powerStatusNames, byte[]> entry : LgLCDConstants.powerStatus.entrySet()) {
 							if (Arrays.equals(reply, entry.getValue())) {
-								powerStatusNames power = entry.getKey();
+								LgLCDConstants.powerStatusNames power = entry.getKey();
 								return power;
 							}
 						}
 					}
 					case INPUT: {
-						for (Map.Entry<inputNames, byte[]> entry : inputs.entrySet()) {
+						for (Map.Entry<LgLCDConstants.inputNames, byte[]> entry : LgLCDConstants.inputs.entrySet()) {
 							if (Arrays.equals(reply, entry.getValue())) {
-								inputNames input = entry.getKey();
+								LgLCDConstants.inputNames input = entry.getKey();
 								return input;
 							}
 						}
@@ -348,27 +337,27 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						return Integer.parseInt(new String(reply), 16);
 					}
 					case FANSTATUS: {
-						for (Map.Entry<fanStatusNames, byte[]> entry : fanStatusCodes.entrySet()) {
+						for (Map.Entry<LgLCDConstants.fanStatusNames, byte[]> entry : LgLCDConstants.fanStatusCodes.entrySet()) {
 							if (Arrays.equals(reply, entry.getValue())) {
-								fanStatusNames fanStatus = entry.getKey();
+								LgLCDConstants.fanStatusNames fanStatus = entry.getKey();
 								return fanStatus;
 							}
 						}
 					}
 					case STATUS: {
 						reply = Arrays.copyOfRange(response, 7, 11);
-						for (Map.Entry<syncStatusNames, byte[]> entry : syncStatusCodes.entrySet()) {
+						for (Map.Entry<LgLCDConstants.syncStatusNames, byte[]> entry : LgLCDConstants.syncStatusCodes.entrySet()) {
 							if (Arrays.equals(reply, entry.getValue())) {
-								syncStatusNames syncStatus = entry.getKey();
+								LgLCDConstants.syncStatusNames syncStatus = entry.getKey();
 								return syncStatus;
 							}
 						}
 					}
 				}
-			} else if (Arrays.equals(responseStatus, replyStatusCodes.get(replyStatusNames.NG))) {
+			} else if (Arrays.equals(responseStatus, LgLCDConstants.replyStatusCodes.get(replyStatusNames.NG))) {
 				switch (expectedResponse) {
 					case FANSTATUS: {
-						return fanStatusNames.NOT_SUPPORTED;
+						return LgLCDConstants.fanStatusNames.NOT_SUPPORTED;
 					}
 					default: {
 						if (this.logger.isErrorEnabled()) {
