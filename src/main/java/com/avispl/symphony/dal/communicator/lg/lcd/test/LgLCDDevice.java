@@ -1,9 +1,9 @@
-package com.avispl.symphony.dal.communicator.lg.lcd;
+package com.avispl.symphony.dal.communicator.lg.lcd.test;
 
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.controlProperties;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.replyStatusNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
+import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.commandNames;
+import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.controlProperties;
+import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.replyStatusNames;
+import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.statisticsProperties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
