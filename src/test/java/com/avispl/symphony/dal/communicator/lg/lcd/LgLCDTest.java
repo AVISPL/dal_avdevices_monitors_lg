@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 
@@ -8,15 +11,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
 
 /**
- * Unit test for QSYSCoreCommunicator
+ * Unit test for LG LCD Device
  *
  * Send and retrieve data success
- * Failed retrieve data
- * Existing Extended Statistics
  *
  * @author Harry
  * @since 1.2
