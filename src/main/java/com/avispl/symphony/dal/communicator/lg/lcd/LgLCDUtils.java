@@ -1,4 +1,4 @@
-package com.avispl.symphony.dal.communicator.lg.lcd.test;
+package com.avispl.symphony.dal.communicator.lg.lcd;
 
 import java.util.ArrayList;
 import java.util.List;

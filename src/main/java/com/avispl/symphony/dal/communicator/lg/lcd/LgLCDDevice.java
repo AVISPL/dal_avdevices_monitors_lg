@@ -1,11 +1,5 @@
-package com.avispl.symphony.dal.communicator.lg.lcd.test;
+package com.avispl.symphony.dal.communicator.lg.lcd;
 
-import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.commandNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.controlProperties;
-import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.replyStatusNames;
-import static com.avispl.symphony.dal.communicator.lg.lcd.test.LgLCDConstants.statisticsProperties;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +14,10 @@ import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.api.dal.dto.monitor.Statistics;
 import com.avispl.symphony.api.dal.monitor.Monitorable;
 import com.avispl.symphony.dal.communicator.SocketCommunicator;
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.controlProperties;
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.replyStatusNames;
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
 
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
@@ -93,6 +91,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		//statistics
 		Map<String, String> statistics = new HashMap<String, String>();
 
+		//dynamicStatistics
+		Map<String, String> dynamicStatistics = new HashMap<>();
+
 		//getting power status from device
 		String power;
 
@@ -120,9 +121,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			throw e;
 		}
 
-		//getting temperature status from device
+		//getting temperature status from device and put to dynamicStatistic
 		try {
-			statistics.put(statisticsProperties.temperature.name(), String.valueOf(getTemperature()));
+			dynamicStatistics.put(statisticsProperties.temperature.name(), String.valueOf(getTemperature()));
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getInput", e);
@@ -154,8 +155,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 		extendedStatistics.setControl(controllable);
 		extendedStatistics.setStatistics(statistics);
+		extendedStatistics.setDynamicStatistics(dynamicStatistics);
 
-		return new ArrayList<Statistics>(Collections.singleton(extendedStatistics));
+		return Collections.singletonList(extendedStatistics);
 	}
 
 	/**
