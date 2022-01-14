@@ -11,6 +11,16 @@ import org.junit.jupiter.api.Test;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
 
+/**
+ * Unit test for QSYSCoreCommunicator
+ *
+ * Send and retrieve data success
+ * Failed retrieve data
+ * Existing Extended Statistics
+ *
+ * @author Harry
+ * @since 1.2
+ */
 public class LgLCDTest {
 
 	private ExtendedStatistics extendedStatistic;
@@ -30,15 +40,19 @@ public class LgLCDTest {
 	}
 
 	/**
-	 *Test LgLCDDevice.getMultipleStatistics get DynamicStatistic success
-	 * Expected retrieve non null temperature data
+	 * Test LgLCDDevice.getMultipleStatistics get DynamicStatistic success
+	 * Expected retrieve monitoring data and non null temperature data
 	 */
 	@Tag("RealDevice")
 	@Test
 	public void testLgLCDDeviceGetDynamicStatistic() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> dynamicStatistic = extendedStatistic.getDynamicStatistics();
+		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		Assertions.assertNotNull(dynamicStatistic.get(statisticsProperties.temperature.name()));
+		Assertions.assertEquals("NOT_SUPPORTED", statistics.get(statisticsProperties.fan.name()));
+		Assertions.assertEquals("HDMI1_PC", statistics.get(statisticsProperties.input.name()));
+		Assertions.assertEquals("SYNC", statistics.get(statisticsProperties.signal.name()));
 	}
 }

@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+*/
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 import java.util.Arrays;
@@ -19,6 +22,20 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.controlPropert
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.replyStatusNames;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
 
+/**
+ * LG LCD Device Adapter
+ * Monitored Statistics
+ * <li>
+ *  Input
+ *  Power
+ *  Fan
+ *  SyncStatus
+ *  Temperature
+ * </li>
+ *
+ * @author Harry
+ * @since 1.2
+ */
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
 	private int monitorID;
@@ -121,7 +138,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			throw e;
 		}
 
-		//getting temperature status from device and put to dynamicStatistic
+		//getting temperature status from device and put into dynamicStatistic
 		try {
 			dynamicStatistics.put(statisticsProperties.temperature.name(), String.valueOf(getTemperature()));
 		} catch (Exception e) {
