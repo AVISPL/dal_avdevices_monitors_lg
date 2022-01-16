@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProperties;
 
 /**
- * Unit test for LG LCD Device
- *
- * Send and retrieve data success
+ * Unit test for LgLCDDevice
  *
  * @author Harry
- * @since 1.2
+ * @version 1.0
+ * @since 1.0
  */
 public class LgLCDTest {
 
@@ -56,5 +56,51 @@ public class LgLCDTest {
 		Assertions.assertEquals("NOT_SUPPORTED", statistics.get(statisticsProperties.fan.name()));
 		Assertions.assertEquals("HDMI1_PC", statistics.get(statisticsProperties.input.name()));
 		Assertions.assertEquals("SYNC", statistics.get(statisticsProperties.signal.name()));
+		Assertions.assertEquals("1", statistics.get(statisticsProperties.power.name()));
+
 	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse Failed
+	 * Expected exception message equal "Unexpected reply"
+	 */
+	@Tag("Mock")
+	@Test
+	public void testDigestResponseFailed1() {
+		byte[] commands = new byte[] { 110 };
+		try {
+			LgLCDConstants.syncStatusNames syncStatusNames = (LgLCDConstants.syncStatusNames) lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+		} catch (Exception e) {
+			Assertions.assertEquals("Unexpected reply", e.getMessage());
+		}
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse Failed
+	 * Expected exception message equal "NG reply"
+	 */
+	@Tag("Mock")
+	@Test
+	public void testDigestResponseFailed2() {
+		byte[] commands = new byte[] { 118, 32, 48, 49, 32, 78, 71, 48, 48, 120 };
+		try {
+			LgLCDConstants.syncStatusNames syncStatusNames = (LgLCDConstants.syncStatusNames) lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+		} catch (Exception e) {
+			Assertions.assertEquals("NG reply", e.getMessage());
+		}
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse FanStatus success
+	 * Expected Fan Status is Faulty
+	 */
+	@Tag("Mock")
+	@Test
+	public void testDigestResponseFanStatusSuccess() {
+		byte[] commands = new byte[] { 119, 32, 48, 49, 32, 79, 75, 48, 48, 120 };
+		LgLCDConstants.fanStatusNames fanStatusNames = (LgLCDConstants.fanStatusNames) lgLCDDevice.digestResponse(commands, commandNames.FANSTATUS);
+		Assertions.assertEquals("FAULTY", fanStatusNames.name());
+	}
+
+
 }

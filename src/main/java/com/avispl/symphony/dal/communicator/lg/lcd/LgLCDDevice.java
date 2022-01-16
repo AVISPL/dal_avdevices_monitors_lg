@@ -1,6 +1,6 @@
 /*
-* Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
-*/
+ * Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 import java.util.Arrays;
@@ -24,14 +24,17 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
 
 /**
  * LG LCD Device Adapter
- * Monitored Statistics
+ *
+ * Static Monitored Statistics
  * <li>
- *  Input
- *  Power
- *  Fan
- *  SyncStatus
- *  Temperature
+ * Input
+ * Power
+ * Fan
+ * SyncStatus
  * </li>
+ *
+ * Historical Monitored Statistics
+ * <li> Temperature </li>
  *
  * @author Harry
  * @since 1.2
@@ -105,7 +108,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			put(controlProperties.power.name(), "Toggle");
 		}};
 
-		//statistics
+		//StaticStatistics
 		Map<String, String> statistics = new HashMap<String, String>();
 
 		//dynamicStatistics
@@ -212,7 +215,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			} else {
 				return power;
 			}
-
 		} catch (Exception e) {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("error during get power send", e);
@@ -221,9 +223,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		return null;
 	}
 
-	private void powerON() {
+	protected void powerON() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.ON)));
+			byte[] response = send(
+					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.ON)));
 
 			digestResponse(response, LgLCDConstants.commandNames.POWER);
 		} catch (Exception e) {
@@ -233,9 +236,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 	}
 
-	private void powerOFF() {
+	protected void powerOFF() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.OFF)));
+			byte[] response = send(
+					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.OFF)));
 
 			digestResponse(response, LgLCDConstants.commandNames.POWER);
 		} catch (Exception e) {
@@ -270,12 +274,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private LgLCDConstants.fanStatusNames getFanStatus() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.FANSTATUS), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
+			byte[] response = send(
+					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.FANSTATUS), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 
 			LgLCDConstants.fanStatusNames fanStatus = (LgLCDConstants.fanStatusNames) digestResponse(response, LgLCDConstants.commandNames.FANSTATUS);
 
 			return fanStatus;
-
 		} catch (Exception e) {
 			System.out.println("Connect exception");
 			return LgLCDConstants.fanStatusNames.NO_FAN;
@@ -289,7 +293,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private Integer getTemperature() {
 		try {
-			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.TEMPERATURE), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
+			byte[] response = send(
+					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.TEMPERATURE), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 
 			Integer temperature = (Integer) digestResponse(response, LgLCDConstants.commandNames.TEMPERATURE);
 
@@ -325,9 +330,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param expectedResponse This is the expected response type to be compared with received
 	 * @return Object This returns the result digested from the response.
 	 */
-	private Object digestResponse(byte[] response, commandNames expectedResponse) {
-
+	protected Object digestResponse(byte[] response, commandNames expectedResponse) {
 		if (response[0] == LgLCDConstants.commands.get(expectedResponse)[1]) {
+
 			byte[] responseStatus = Arrays.copyOfRange(response, 5, 7);
 
 			if (Arrays.equals(responseStatus, LgLCDConstants.replyStatusCodes.get(replyStatusNames.OK))) {
@@ -336,7 +341,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 				switch (expectedResponse) {
 					case POWER: {
-
 						for (Map.Entry<LgLCDConstants.powerStatusNames, byte[]> entry : LgLCDConstants.powerStatus.entrySet()) {
 							if (Arrays.equals(reply, entry.getValue())) {
 								LgLCDConstants.powerStatusNames power = entry.getKey();
