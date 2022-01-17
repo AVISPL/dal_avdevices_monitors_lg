@@ -37,6 +37,7 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
  * <li> Temperature </li>
  *
  * @author Harry
+ * @version 1.2
  * @since 1.2
  */
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
