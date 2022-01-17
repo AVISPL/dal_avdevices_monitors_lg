@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
@@ -42,12 +43,12 @@ public class LgLCDTest {
 	}
 
 	/**
-	 * Test LgLCDDevice.getMultipleStatistics get DynamicStatistic success
-	 * Expected retrieve monitoring data and non null temperature data
+	 * Test LgLCDDevice.getMultipleStatistics get Statistic and DynamicStatistic success
+	 * Expected retrieve monitoring data and non-null temperature data
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testLgLCDDeviceGetDynamicStatistic() throws Exception {
+	public void testLgLCDDeviceGetStatistic() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> dynamicStatistic = extendedStatistic.getDynamicStatistics();
 		Map<String, String> statistics = extendedStatistic.getStatistics();
