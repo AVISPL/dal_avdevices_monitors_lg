@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
@@ -21,13 +21,14 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
  * Unit test for LgLCDDevice
  *
  * @author Harry
- * @version 1.0
- * @since 1.0
+ * @version 1.2
+ * @since 1.2
  */
 public class LgLCDTest {
 
 	private ExtendedStatistics extendedStatistic;
 	private LgLCDDevice lgLCDDevice;
+
 
 	@BeforeEach
 	public void setUp() throws Exception {
@@ -68,12 +69,11 @@ public class LgLCDTest {
 	@Tag("Mock")
 	@Test
 	public void testDigestResponseFailed1() {
-		byte[] commands = new byte[] { 110 };
-		try {
-			LgLCDConstants.syncStatusNames syncStatusNames = (LgLCDConstants.syncStatusNames) lgLCDDevice.digestResponse(commands, commandNames.STATUS);
-		} catch (Exception e) {
-			Assertions.assertEquals("Unexpected reply", e.getMessage());
-		}
+		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+			byte[] commands = new byte[] { 110 };
+			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+		});
+		Assertions.assertEquals("Unexpected reply", exception.getMessage());
 	}
 
 	/**
@@ -81,14 +81,13 @@ public class LgLCDTest {
 	 * Expected exception message equal "NG reply"
 	 */
 	@Tag("Mock")
-	@Test
+	@Test()
 	public void testDigestResponseFailed2() {
-		byte[] commands = new byte[] { 118, 32, 48, 49, 32, 78, 71, 48, 48, 120 };
-		try {
-			LgLCDConstants.syncStatusNames syncStatusNames = (LgLCDConstants.syncStatusNames) lgLCDDevice.digestResponse(commands, commandNames.STATUS);
-		} catch (Exception e) {
-			Assertions.assertEquals("NG reply", e.getMessage());
-		}
+		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+			byte[] commands = new byte[] { 118, 32, 48, 49, 32, 78, 71 };
+			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+		});
+		Assertions.assertEquals("NG reply", exception.getMessage());
 	}
 
 	/**
@@ -98,10 +97,8 @@ public class LgLCDTest {
 	@Tag("Mock")
 	@Test
 	public void testDigestResponseFanStatusSuccess() {
-		byte[] commands = new byte[] { 119, 32, 48, 49, 32, 79, 75, 48, 48, 120 };
+		byte[] commands = new byte[] { 119, 32, 48, 49, 32, 79, 75, 48, 48 };
 		LgLCDConstants.fanStatusNames fanStatusNames = (LgLCDConstants.fanStatusNames) lgLCDDevice.digestResponse(commands, commandNames.FANSTATUS);
 		Assertions.assertEquals("FAULTY", fanStatusNames.name());
 	}
-
-
 }

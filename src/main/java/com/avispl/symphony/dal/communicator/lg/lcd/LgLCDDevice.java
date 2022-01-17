@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
@@ -41,7 +41,7 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
  */
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
-	private int monitorID;
+	 int monitorID;
 
 	/**
 	 * Constructor set the TCP/IP port to be used as well the default monitor ID
@@ -262,7 +262,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 			return input;
 		} catch (Exception e) {
-			System.out.println("Connect exception");
+			this.logger.error("Connect exception",e);
 			return LgLCDConstants.inputNames.OFF;
 		}
 	}
@@ -281,7 +281,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 			return fanStatus;
 		} catch (Exception e) {
-			System.out.println("Connect exception");
+			this.logger.error("Connect exception",e);
 			return LgLCDConstants.fanStatusNames.NO_FAN;
 		}
 	}
@@ -300,7 +300,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 			return temperature;
 		} catch (Exception e) {
-			System.out.println("Connect exception");
+			this.logger.error("Connect exception",e);
 			return 0;
 		}
 	}
@@ -318,7 +318,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 			return status;
 		} catch (Exception e) {
-			System.out.println("Connect exception");
+			this.logger.error("Connect exception",e);
 			return LgLCDConstants.syncStatusNames.NO_SYNC;
 		}
 	}

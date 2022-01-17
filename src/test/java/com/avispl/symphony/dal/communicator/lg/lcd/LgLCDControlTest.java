@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2021 AVI-SPL, Inc. All Rights Reserved.
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 import static org.mockito.Mockito.times;
+
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,8 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.controlPropert
  * Unit test for Control of LgLCDDevice
  *
  * @author Harry
- * @version 1.0
- * @since 1.0
+ * @version 1.2
+ * @since 1.2
  */
 public class LgLCDControlTest {
 
@@ -25,7 +26,7 @@ public class LgLCDControlTest {
 	 * Set power property with value 1 (On)
 	 * Expect verify with method powerOn
 	 */
-	@Tag("Mock")
+	@Tag("RealDevice")
 	@Test
 	public void testPowerOn() throws Exception {
 		ControllableProperty controllableProperty = new ControllableProperty();
