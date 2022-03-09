@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
       - 'release/**'
       - 'bugfix/**'
 jobs:
@@ -56,5 +57,5 @@ jobs:
       run: echo "::set-output name=file::$(ls target/symphony-dal-communicator-lg-lcd-${{ needs.versiongenerate.outputs.version }}.jar)"
     - uses: actions/upload-artifact@v2
       with:
-        name: LgLCD
+        name: LGLCD
         path: ${{ steps.getfilename.outputs.file }}
