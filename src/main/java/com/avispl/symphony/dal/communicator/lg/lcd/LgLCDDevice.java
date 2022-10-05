@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.avispl.symphony.dal.util.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.avispl.symphony.api.dal.control.Controller;
@@ -43,6 +44,7 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
 	int monitorID;
+	private String historicalProperties;
 
 	/**
 	 * Constructor set the TCP/IP port to be used as well the default monitor ID
@@ -57,6 +59,24 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		this.setCommandSuccessList(Collections.singletonList("OK"));
 		// set list of error response strings (included at the end of response when command fails, typically ending with command prompt)
 		this.setCommandErrorList(Collections.singletonList("NG"));
+	}
+
+	/**
+	 * Retrieves {@link #historicalProperties}
+	 *
+	 * @return value of {@link #historicalProperties}
+	 */
+	public String getHistoricalProperties() {
+		return historicalProperties;
+	}
+
+	/**
+	 * Sets {@link #historicalProperties} value
+	 *
+	 * @param historicalProperties new value of {@link #historicalProperties}
+	 */
+	public void setHistoricalProperties(String historicalProperties) {
+		this.historicalProperties = historicalProperties;
 	}
 
 	/**
@@ -144,7 +164,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 
 		//getting temperature status from device and put into dynamicStatistic
 		try {
-			dynamicStatistics.put(statisticsProperties.temperature.name(), String.valueOf(getTemperature()));
+			String temperatureParameter = statisticsProperties.temperature.name();
+			String temperatureValue = String.valueOf(getTemperature());
+			if (StringUtils.isNotNullOrEmpty(historicalProperties) && historicalProperties.contains(temperatureParameter)) {
+				dynamicStatistics.put(temperatureParameter, temperatureValue);
+			} else {
+				statistics.put(temperatureParameter, temperatureValue);
+			}
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during getInput", e);
