@@ -3,13 +3,8 @@
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.avispl.symphony.dal.util.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.avispl.symphony.api.dal.control.Controller;
@@ -44,7 +39,7 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.statisticsProp
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
 	int monitorID;
-	private String historicalProperties;
+	private Set<String> historicalProperties = new HashSet<>();
 
 	/**
 	 * Constructor set the TCP/IP port to be used as well the default monitor ID
@@ -67,7 +62,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @return value of {@link #historicalProperties}
 	 */
 	public String getHistoricalProperties() {
-		return historicalProperties;
+		return String.join(",", this.historicalProperties);
 	}
 
 	/**
@@ -76,7 +71,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param historicalProperties new value of {@link #historicalProperties}
 	 */
 	public void setHistoricalProperties(String historicalProperties) {
-		this.historicalProperties = historicalProperties;
+		this.historicalProperties.clear();
+		Arrays.asList(historicalProperties.split(",")).forEach(propertyName -> {
+			this.historicalProperties.add(propertyName.trim());
+		});
 	}
 
 	/**
@@ -166,7 +164,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		try {
 			String temperatureParameter = statisticsProperties.temperature.name();
 			String temperatureValue = String.valueOf(getTemperature());
-			if (StringUtils.isNotNullOrEmpty(historicalProperties) && historicalProperties.contains(temperatureParameter)) {
+			if (!historicalProperties.isEmpty() && historicalProperties.contains(temperatureParameter)) {
 				dynamicStatistics.put(temperatureParameter, temperatureValue);
 			} else {
 				statistics.put(temperatureParameter, temperatureValue);
