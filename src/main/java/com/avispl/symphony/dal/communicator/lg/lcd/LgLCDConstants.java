@@ -29,18 +29,36 @@ public class LgLCDConstants {
 		put(fanStatusNames.NO_FAN, new byte[] { '0', '2' });
 	}};
 
-	enum commandNames {POWER, INPUT, TEMPERATURE, FANSTATUS, STATUS, GET}
+	enum commandNames {
+		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME,
+		TILE_MODE, DPM_STATUS, DST_START_TIME, DST_END_TIME, DISPLAY_AND_SOUND, BACKLIGHT, DPM, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM
+	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
 		put(commandNames.POWER, new byte[] { 'k', 'd' });
 		put(commandNames.INPUT, new byte[] { 'x', 'b' });
 		put(commandNames.TEMPERATURE, new byte[] { 'd', 'n' });
-		put(commandNames.FANSTATUS, new byte[] { 'd', 'w' });
+		put(commandNames.FAN_STATUS, new byte[] { 'd', 'w' });
 		put(commandNames.STATUS, new byte[] { 's', 'v' });
 		put(commandNames.GET, new byte[] { 'F', 'F' });
+		put(commandNames.SERIAL_NUMBER, new byte[] { 'f', 'y' });
+		put(commandNames.SOFTWARE_VERSION, new byte[] { 'f', 'z' });
+		put(commandNames.FAILOVER, new byte[] { 'm', 'i' });
+		put(commandNames.DATE, new byte[] { 'f', 'a' });
+		put(commandNames.TIME, new byte[] { 'f', 'x' });
+		put(commandNames.TILE_MODE, new byte[] { 'd', 'z' });
+		put(commandNames.DPM_STATUS, new byte[] { 'f', 'j' });
+		put(commandNames.DST_START_TIME, new byte[] { 's', 'd', ' ', '0', '1', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
+		put(commandNames.DST_END_TIME, new byte[] { 's', 'd', ' ', '0', '2', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
+		put(commandNames.BACKLIGHT, new byte[] { 'm', 'g' });
+		put(commandNames.MUTE, new byte[] { 'k', 'e' });
+		put(commandNames.VOLUME, new byte[] { 'k', 'f' });
+		put(commandNames.PMD_MODE, new byte[] { 's', 'n' });
+		put(commandNames.PMD_MODE_PARAM, new byte[] { '0', 'c', ' ', 'f', 'f' });
+		put(commandNames.INPUT_SOURCE, new byte[] { 'x', 'b' });
 	}};
 
-	final static byte signalStatus[] = { '0', '2', ' ', 'F', 'F' };
+	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
 
 	enum syncStatusNames {NO_SYNC, SYNC}
 
@@ -78,5 +96,33 @@ public class LgLCDConstants {
 
 	enum controlProperties {power, input}
 
-	enum statisticsProperties {power, fan, input, temperature, signal}
+	public static String POWER = "Power";
+	public static String FAN = "Fan";
+	public static String INPUT = "Input";
+	public static String TEMPERATURE = "Temperature";
+	public static String SIGNAL = "Signal";
+	public static String SERIAL_NUMBER = "SerialNumber";
+	public static String SOFTWARE_VERSION = "SoftwareVersion";
+	public static String FAILOVER_STATUS = "FailOverStatus";
+	public static String DATE_TIME = "DateTime";
+	public static String TILE_MODE_STATUS = "TileModeStatus";
+	public static String DPM_STATUS = "DPMStatus";
+	public static String START_TIME = "DSTStartTime";
+	public static String END_TIME = "DSTEndTime";
+	public static String DISPLAY_AND_SOUND = "DisplayAndSound";
+	public static String HASH = "#";
+	public static String BACKLIGHT = "BackLight(%)";
+	public static String BACKLIGHT_VALUE = "BackLightValue";
+	public static String DPM = "DPM";
+	public static String INPUT_SOURCE = "InputSource";
+	public static String MUTE = "Mute";
+	public static String VOLUME = "Volume";
+	public static String VOLUME_VALUE = "VolumeValue";
+	public static String ON = "On";
+	public static String OFF = "Off";
+	public static String PMD_MODE = "PMDMode";
+	public static int NUMBER_ONE = 1;
+	public static int ZERO = 0;
+	public static String MUTE_VALUE = "00";
+	public static String UNMUTE_VALUE = "01";
 }

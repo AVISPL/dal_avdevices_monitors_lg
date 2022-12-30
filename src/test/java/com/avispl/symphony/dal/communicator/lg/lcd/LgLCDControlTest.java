@@ -45,8 +45,8 @@ public class LgLCDControlTest {
 	@Test
 	public void testPowerOff() throws Exception {
 		ControllableProperty controllableProperty = new ControllableProperty();
-		controllableProperty.setProperty(controlProperties.power.name());
-		controllableProperty.setValue("0");
+		controllableProperty.setProperty(LgControllingCommand.VOLUME.getCommand());
+		controllableProperty.setValue("50");
 
 		LgLCDDevice lgLCDDeviceSpy = Mockito.spy(LgLCDDevice.class);
 		Mockito.doNothing().when(lgLCDDeviceSpy).powerOFF();
