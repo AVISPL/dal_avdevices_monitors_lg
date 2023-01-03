@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.avispl.symphony.api.dal.dto.control.AdvancedControllableProperty;
 import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
+import com.avispl.symphony.api.dal.error.ResourceNotReachableException;
 import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
 
 /**
@@ -74,10 +75,6 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 		List<AdvancedControllableProperty> list = extendedStatistic.getControllableProperties();
 
-		ControllableProperty controllableProperty = new ControllableProperty();
-		controllableProperty.setProperty(LgLCDConstants.PMD_MODE + LgLCDConstants.HASH + LgControllingCommand.PMD_MODE.getName());
-		controllableProperty.setValue(PMDModeEnum.SCREEN_OFF_ALWAYS.getName());
-		lgLCDDevice.controlProperty(controllableProperty);
 		Assertions.assertEquals("38", statistics.get(LgLCDConstants.TEMPERATURE));
 		Assertions.assertEquals("NOT_SUPPORTED", statistics.get(LgLCDConstants.FAN));
 		Assertions.assertEquals("HDMI1_PC", statistics.get(LgLCDConstants.INPUT));
@@ -100,7 +97,7 @@ public class LgLCDTest {
 			byte[] commands = new byte[] { 110 };
 			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
 		});
-		Assertions.assertEquals("Unexpected reply", exception.getMessage());
+		Assertions.assertEquals("Error Unexpected reply", exception.getMessage());
 	}
 
 	/**
@@ -125,7 +122,183 @@ public class LgLCDTest {
 	@Test
 	public void testDigestResponseFanStatusSuccess() {
 		byte[] commands = new byte[] { 119, 32, 48, 49, 32, 79, 75, 48, 48 };
-//		LgLCDConstants.fanStatusNames fanStatusNames = (LgLCDConstants.fanStatusNames) lgLCDDevice.digestResponse(commands, commandNames.FANSTATUS);
-//		Assertions.assertEquals("FAULTY", fanStatusNames.name());
+		LgLCDConstants.fanStatusNames fanStatusNames = (LgLCDConstants.fanStatusNames) lgLCDDevice.digestResponse(commands, commandNames.FAN_STATUS);
+		Assertions.assertEquals("FAULTY", fanStatusNames.name());
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control backlight success
+	 * Expected control backlight success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlBackLight() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.BACKLIGHT.getName();
+		String value = "20";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control DPM success
+	 * Expected control DPM success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlDPM() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
+		String value = PowerManagement.SECOND_10.getName();
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control InputSource as HDMI1 success
+	 * Expected control HDMI1 success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputSource() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
+		String value = PowerManagement.SECOND_10.getName();
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control Mute volume success
+	 * Expected control Mute volume success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlMuteVolume() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control Unmute success
+	 * Expected control Unmute success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void tesControlUnmute() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
+		String value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("0", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control volume success
+	 * Expected control volume success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlVolume() throws Exception {
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.VOLUME.getName();
+		String value = "20";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("20", statistics.get(property));
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse volume error
+	 * Expected digestResponse volume error
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlVolumeError() throws Exception {
+		byte[] commands = new byte[] { 102, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.VOLUME), "expect throw error because response NG");
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse input source error
+	 * Expected digestResponse input source error
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputSourceError() throws Exception {
+		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse mute volume error
+	 * Expected digestResponse mute volume error
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testMonitoringControlMuteError() throws Exception {
+		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+	}
+
+	/**
+	 * Test lgLCDDevice.digestResponse backlight error
+	 * Expected digestResponse backlight error
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testMonitoringControlBackLightError() throws Exception {
+		byte[] commands = new byte[] { 103, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
 	}
 }

@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * InputSourceEnum  class defined the enum for monitoring and controlling process
+ * InputSourceEnum class defined the enum provides list input source
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/12/2022
@@ -15,8 +15,7 @@ public enum InputSourceEnum {
 	HDMI1("HDMI1", "a0"),
 	HDMI2("HDMI2", "a1"),
 	HDMI3_OPS_DTV("HDMI 3/OPS/DVI", "a2"),
-	DISPLAYPORT_DTV("DISPLAYPORT", "d0"),
-	NONE("None", "");
+	DISPLAYPORT_DTV("DISPLAYPORT", "d0");
 
 	private final String name;
 	private final String value;
@@ -50,7 +49,7 @@ public enum InputSourceEnum {
 				return inputSourceEnum.getName();
 			}
 		}
-		return InputSourceEnum.NONE.getName();
+		return "None";
 	}
 
 	public static String getValueByName(String name) {
@@ -59,6 +58,6 @@ public enum InputSourceEnum {
 				return inputSourceEnum.getValue();
 			}
 		}
-		return InputSourceEnum.NONE.getName();
+		return "None";
 	}
 }

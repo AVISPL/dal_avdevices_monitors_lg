@@ -5,7 +5,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * FailOverEnum  class defined the enum for monitoring and controlling process
+ * FailOverEnum class defined the enum provides list fail over status
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/1/2022
@@ -41,5 +41,14 @@ public enum FailOverEnum {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	public static String getValueByName(String name) {
+		for (FailOverEnum failOverEnum : FailOverEnum.values()) {
+			if (failOverEnum.getName().equals(name)) {
+				return failOverEnum.getValue();
+			}
+		}
+		return "None";
 	}
 }

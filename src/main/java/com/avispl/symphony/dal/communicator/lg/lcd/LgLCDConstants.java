@@ -31,7 +31,7 @@ public class LgLCDConstants {
 
 	enum commandNames {
 		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME,
-		TILE_MODE, DPM_STATUS, DST_START_TIME, DST_END_TIME, DISPLAY_AND_SOUND, BACKLIGHT, DPM, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM
+		TILE_MODE, PMD, DST_START_TIME, DST_END_TIME, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -44,10 +44,11 @@ public class LgLCDConstants {
 		put(commandNames.SERIAL_NUMBER, new byte[] { 'f', 'y' });
 		put(commandNames.SOFTWARE_VERSION, new byte[] { 'f', 'z' });
 		put(commandNames.FAILOVER, new byte[] { 'm', 'i' });
+		put(commandNames.FAILOVER_INPUT_LIST, new byte[] { 'm', 'j' });
 		put(commandNames.DATE, new byte[] { 'f', 'a' });
 		put(commandNames.TIME, new byte[] { 'f', 'x' });
 		put(commandNames.TILE_MODE, new byte[] { 'd', 'z' });
-		put(commandNames.DPM_STATUS, new byte[] { 'f', 'j' });
+		put(commandNames.PMD, new byte[] { 'f', 'j' });
 		put(commandNames.DST_START_TIME, new byte[] { 's', 'd', ' ', '0', '1', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
 		put(commandNames.DST_END_TIME, new byte[] { 's', 'd', ' ', '0', '2', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
 		put(commandNames.BACKLIGHT, new byte[] { 'm', 'g' });
@@ -110,12 +111,14 @@ public class LgLCDConstants {
 	public static String START_TIME = "DSTStartTime";
 	public static String END_TIME = "DSTEndTime";
 	public static String DISPLAY_AND_SOUND = "DisplayAndSound";
+	public static String FAILOVER = "FailOver";
 	public static String HASH = "#";
 	public static String BACKLIGHT = "BackLight(%)";
 	public static String BACKLIGHT_VALUE = "BackLightValue";
 	public static String DPM = "DPM";
 	public static String INPUT_SOURCE = "InputSource";
 	public static String MUTE = "Mute";
+	public static String UNMUTE = "Unmute";
 	public static String VOLUME = "Volume";
 	public static String VOLUME_VALUE = "VolumeValue";
 	public static String ON = "On";
@@ -123,6 +126,33 @@ public class LgLCDConstants {
 	public static String PMD_MODE = "PMDMode";
 	public static int NUMBER_ONE = 1;
 	public static int ZERO = 0;
+	public static int MAX_RANGE_BACKLIGHT = 100;
+	public static int MAX_RANGE_VOLUME = 100;
 	public static String MUTE_VALUE = "00";
 	public static String UNMUTE_VALUE = "01";
+	public static String NONE = "None";
+	public static String EMPTY_STRING = "";
+	public static String COLON = ":";
+	public static String SPACE = " ";
+	public static String AUTO = "Auto";
+	public static String INPUT_PRIORITY = "InputPriority";
+	public static String PRIORITY_ONE = "Priority1";
+	public static String PRIORITY_TWO = "Priority2";
+	public static String PRIORITY_THREE = "Priority3";
+	public static String PRIORITY_FOUR = "Priority4";
+	public static String PRIORITY_DOWN = "PriorityDown";
+	public static String UPPING = "Upping";
+	public static String UP = "Up";
+	public static String PRIORITY_UP = "PriorityUp";
+	public static String DOWNING = "DOWNING";
+	public static String DOWN = "DOWN";
+	public static String MANUAL = "Manual";
+	public static String HDMI_1 = "HDMI1";
+	public static String HDMI_2 = "HDMI2";
+	public static String HDMI_3 = "HDMI3";
+	public static String DISPLAYPORT = "DISPLAYPORT";
+	public static String BYTE_COMMAND = "0c ";
+	public static String IS_VALID_CONFIG_MANAGEMENT = "true";
+	public static String AM = "AM";
+	public static String PM = "PM";
 }

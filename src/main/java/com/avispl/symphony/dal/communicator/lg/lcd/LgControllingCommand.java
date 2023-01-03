@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * LgControllingCommand class provides during the monitoring and controlling process
+ * LgControllingCommand class defined the enum provides list contronlling command
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/28/2022
@@ -17,7 +17,12 @@ public enum LgControllingCommand {
 	MUTE("Mute", ""),
 	INPUT_SOURCE("InputSource", ""),
 	PMD("DPM", ""),
-	BACKLIGHT("BackLight(%)", "");
+	BACKLIGHT("BackLight(%)", ""),
+	INPUT_PRIORITY("InputPriority", ""),
+	PRIORITY_UP("PriorityUp", ""),
+	PRIORITY_DOWN("PriorityDown", ""),
+	PRIORITY_INPUT("PriorityInput", ""),
+	FAILOVER_STATUS("FailOverStatus", "");
 
 	private final String name;
 	private final String command;

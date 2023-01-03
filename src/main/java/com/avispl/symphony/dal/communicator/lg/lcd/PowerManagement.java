@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * PowerManagement  class defined the enum for monitoring and controlling process
+ * PowerManagement class defined the enum provides list power management value
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/1/2022
@@ -43,5 +43,14 @@ public enum PowerManagement {
 	 */
 	public String getValue() {
 		return value;
+	}
+
+	public static String getValueByName(String name) {
+		for (PowerManagement powerManagement : PowerManagement.values()) {
+			if (powerManagement.getName().equals(name)) {
+				return powerManagement.getValue();
+			}
+		}
+		return "None";
 	}
 }

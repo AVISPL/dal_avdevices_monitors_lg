@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * PMDModeEnum class defined the enum for monitoring and controlling process
+ * PMDModeEnum class defined the enum provides list PDM mode value
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/28/2022

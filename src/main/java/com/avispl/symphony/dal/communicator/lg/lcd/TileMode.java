@@ -5,7 +5,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * TileMode  class defined the enum for monitoring and controlling process
+ * TileMode class defined the enum provides tile mode status
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/1/2022
