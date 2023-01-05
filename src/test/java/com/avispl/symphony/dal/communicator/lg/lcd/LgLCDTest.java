@@ -34,7 +34,7 @@ public class LgLCDTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
-		lgLCDDevice.setHost("172.31.254.160");
+		lgLCDDevice.setHost("172.31.254.175");
 		lgLCDDevice.init();
 		lgLCDDevice.connect();
 	}

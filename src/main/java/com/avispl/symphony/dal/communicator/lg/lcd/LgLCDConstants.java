@@ -68,7 +68,7 @@ public class LgLCDConstants {
 		put(syncStatusNames.SYNC, new byte[] { '0', '2', '0', '1' });
 	}};
 
-	enum inputNames {AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
+	enum inputNames {HDMI3, HDMI3_PC, AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
 
 	final static Map<inputNames, byte[]> inputs = new HashMap<inputNames, byte[]>() {{
 		put(inputNames.AV, new byte[] { '2', '0' });
@@ -93,6 +93,8 @@ public class LgLCDConstants {
 		put(inputNames.SUPERSIGN_PLAYER, new byte[] { 'e', '0' });
 		put(inputNames.OTHERS, new byte[] { 'e', '1' });
 		put(inputNames.MULTI_SCREEN, new byte[] { 'e', '2' });
+		put(inputNames.HDMI3_PC, new byte[] { 'd', '2' });
+		put(inputNames.HDMI3, new byte[] { 'c', '2' });
 	}};
 
 	enum controlProperties {power, input}
@@ -100,27 +102,26 @@ public class LgLCDConstants {
 	public static String POWER = "Power";
 	public static String FAN = "Fan";
 	public static String INPUT = "Input";
-	public static String TEMPERATURE = "Temperature";
-	public static String SIGNAL = "Signal";
+	public static String TEMPERATURE = "Temperature(C)";
+	public static String SIGNAL = "InputSignal";
 	public static String SERIAL_NUMBER = "SerialNumber";
 	public static String SOFTWARE_VERSION = "SoftwareVersion";
-	public static String FAILOVER_STATUS = "FailOverStatus";
+	public static String FAILOVER_STATUS = "FailOverMode";
 	public static String DATE_TIME = "DateTime";
-	public static String TILE_MODE_STATUS = "TileModeStatus";
-	public static String DPM_STATUS = "DPMStatus";
+	public static String TILE_MODE_STATUS = "TileMode";
+	public static String DPM_STATUS = "StandbyMode";
 	public static String START_TIME = "DSTStartTime";
 	public static String END_TIME = "DSTEndTime";
 	public static String DISPLAY_AND_SOUND = "DisplayAndSound";
 	public static String FAILOVER = "FailOver";
 	public static String HASH = "#";
 	public static String BACKLIGHT = "BackLight(%)";
-	public static String BACKLIGHT_VALUE = "BackLightValue";
-	public static String DPM = "DPM";
-	public static String INPUT_SOURCE = "InputSource";
+	public static String BACKLIGHT_VALUE = "BacklightValue(%)";
+	public static String DPM = "StandbyMode";
+	public static String INPUT_SOURCE = "Input";
 	public static String MUTE = "Mute";
-	public static String UNMUTE = "Unmute";
-	public static String VOLUME = "Volume";
-	public static String VOLUME_VALUE = "VolumeValue";
+	public static String VOLUME = "Volume(%)";
+	public static String VOLUME_VALUE = "VolumeValue(%)";
 	public static String ON = "On";
 	public static String OFF = "Off";
 	public static String PMD_MODE = "PMDMode";
@@ -136,16 +137,14 @@ public class LgLCDConstants {
 	public static String SPACE = " ";
 	public static String AUTO = "Auto";
 	public static String INPUT_PRIORITY = "InputPriority";
-	public static String PRIORITY_ONE = "Priority1";
-	public static String PRIORITY_TWO = "Priority2";
-	public static String PRIORITY_THREE = "Priority3";
-	public static String PRIORITY_FOUR = "Priority4";
+	public static String PRIORITY = "Priority";
+	public static String PRIORITY_INPUT = "PriorityInput";
 	public static String PRIORITY_DOWN = "PriorityDown";
 	public static String UPPING = "Upping";
 	public static String UP = "Up";
 	public static String PRIORITY_UP = "PriorityUp";
-	public static String DOWNING = "DOWNING";
-	public static String DOWN = "DOWN";
+	public static String DOWNING = "Downing";
+	public static String DOWN = "Down";
 	public static String MANUAL = "Manual";
 	public static String HDMI_1 = "HDMI1";
 	public static String HDMI_2 = "HDMI2";
