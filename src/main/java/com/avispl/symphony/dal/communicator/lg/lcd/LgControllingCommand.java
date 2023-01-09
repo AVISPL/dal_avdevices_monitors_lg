@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * LgControllingCommand class defined the enum provides list contronlling command
+ * LgControllingCommand class defined the enum provides list controlling command
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/28/2022

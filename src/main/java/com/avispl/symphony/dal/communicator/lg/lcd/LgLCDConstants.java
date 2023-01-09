@@ -31,7 +31,7 @@ public class LgLCDConstants {
 
 	enum commandNames {
 		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME,
-		TILE_MODE, PMD, DST_START_TIME, DST_END_TIME, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST
+		TILE_MODE, PMD, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -49,14 +49,14 @@ public class LgLCDConstants {
 		put(commandNames.TIME, new byte[] { 'f', 'x' });
 		put(commandNames.TILE_MODE, new byte[] { 'd', 'z' });
 		put(commandNames.PMD, new byte[] { 'f', 'j' });
-		put(commandNames.DST_START_TIME, new byte[] { 's', 'd', ' ', '0', '1', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
-		put(commandNames.DST_END_TIME, new byte[] { 's', 'd', ' ', '0', '2', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f', ' ', 'f', 'f' });
 		put(commandNames.BACKLIGHT, new byte[] { 'm', 'g' });
 		put(commandNames.MUTE, new byte[] { 'k', 'e' });
 		put(commandNames.VOLUME, new byte[] { 'k', 'f' });
 		put(commandNames.PMD_MODE, new byte[] { 's', 'n' });
 		put(commandNames.PMD_MODE_PARAM, new byte[] { '0', 'c', ' ', 'f', 'f' });
 		put(commandNames.INPUT_SOURCE, new byte[] { 'x', 'b' });
+		put(commandNames.NETWORK_SETTING, new byte[] { 's', 'n' });
+		put(commandNames.NETWORK_SETTING_PARAM, new byte[] { '0', '3', ' ', 'f', 'f' });
 	}};
 
 	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
@@ -154,4 +154,9 @@ public class LgLCDConstants {
 	public static String IS_VALID_CONFIG_MANAGEMENT = "true";
 	public static String AM = "AM";
 	public static String PM = "PM";
+	public static String IP_ADDRESS = "IPAddress";
+	public static String SUB_NETMASK = "SubNetmask";
+	public static String DNS_SERVER = "DNSServer";
+	public static String GATEWAY = "Gateway";
+	public static String DOT = ".";
 }

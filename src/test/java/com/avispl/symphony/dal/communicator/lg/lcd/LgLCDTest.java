@@ -34,7 +34,7 @@ public class LgLCDTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
-		lgLCDDevice.setHost("172.31.254.175");
+		lgLCDDevice.setHost("172.31.254.160");
 		lgLCDDevice.init();
 		lgLCDDevice.connect();
 	}
@@ -247,8 +247,8 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.VOLUME.getName();
-		String value = "20";
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgControllingCommand.PRIORITY_DOWN.getName();
+		String value = "1";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
