@@ -354,7 +354,7 @@ public class LgLCDTest {
 
 	/**
 	 * Test LgLCDDevice.getMultipleStatistics control priority down
-	 * Expected control control priority down success
+	 * Expected control priority down success
 	 */
 	@Tag("RealDevice")
 	@Test
@@ -369,9 +369,12 @@ public class LgLCDTest {
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("HDMI1", statistics.get(property));
 
-		 property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_DOWN;
-		 value = "1";
+		property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_DOWN;
+		value = "1";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
@@ -383,7 +386,7 @@ public class LgLCDTest {
 
 	/**
 	 * Test LgLCDDevice.getMultipleStatistics control priority down
-	 * Expected control control priority down success
+	 * Expected control priority down success
 	 */
 	@Tag("RealDevice")
 	@Test
@@ -399,6 +402,10 @@ public class LgLCDTest {
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
 
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("HDMI1", statistics.get(property));
+
 		property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_UP;
 		value = "1";
 		controllableProperty.setProperty(property);
@@ -410,7 +417,10 @@ public class LgLCDTest {
 		Assertions.assertEquals("1", statistics.get(property));
 	}
 
-
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control tile mode off
+	 * Expected control tile mode off success
+	 */
 	@Tag("RealDevice")
 	@Test
 	public void testControlTileModeOff() throws Exception {
@@ -430,6 +440,10 @@ public class LgLCDTest {
 		Assertions.assertEquals("0", statistics.get(property));
 	}
 
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control tile mode on
+	 * Expected control tile mode on success
+	 */
 	@Tag("RealDevice")
 	@Test
 	public void testControlTileModeON() throws Exception {
@@ -449,6 +463,10 @@ public class LgLCDTest {
 		Assertions.assertEquals("1", statistics.get(property));
 	}
 
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control natural off
+	 * Expected control natural off success
+	 */
 	@Tag("RealDevice")
 	@Test
 	public void testControlNaturalModeOff() throws Exception {
@@ -468,13 +486,16 @@ public class LgLCDTest {
 		Assertions.assertEquals("0", statistics.get(property));
 	}
 
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control natural on
+	 * Expected control natural on success
+	 */
 	@Tag("RealDevice")
 	@Test
 	public void testControlNaturalModeOn() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
-
 		ControllableProperty controllableProperty = new ControllableProperty();
 		String property = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_MODE;
 		String value = "1";

@@ -60,6 +60,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private Map<String, String> cacheMapOfPropertyNameAndValue = new HashMap<>();
 	private Map<String, String> cacheMapOfPriorityInputAndValue;
 	private ExtendedStatistics localExtendedStatistics;
+	private boolean isInputTypePC;
 
 	/**
 	 * store configManagement adapter properties
@@ -231,8 +232,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						stats.put(group + LgLCDConstants.BACKLIGHT_VALUE, String.valueOf((int) Float.parseFloat(value)));
 						break;
 					case INPUT_SOURCE:
-						dataConvert = EnumTypeHandler.getNameEnumByValue(InputSourceDropdown.class, value);
+						dataConvert = InputSourceDropdown.getValueOfEnumByNameAndType(value, isInputTypePC);
 						sendRequestToControlValue(commandNames.INPUT_SOURCE, dataConvert.getBytes(StandardCharsets.UTF_8));
+						break;
+					case INPUT_TYPE:
+						isInputTypePC = LgLCDConstants.PC.equalsIgnoreCase(value) ? true : false;
 						break;
 					case PMD_MODE:
 						dataConvert = LgLCDConstants.BYTE_COMMAND + EnumTypeHandler.getNameEnumByValue(PMDModeEnum.class, value);
@@ -616,7 +620,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private void populateControllingData(Map<String, String> controlStatistics, List<AdvancedControllableProperty> advancedControllableProperties) {
 		retrievePowerStatus(advancedControllableProperties, controlStatistics);
-
 		retrieveFailOverGroupValue(controlStatistics, advancedControllableProperties);
 		retrieveDisplayAndSoundGroupValue(controlStatistics, advancedControllableProperties);
 		retrieveTileModeGroupValue(controlStatistics, advancedControllableProperties);

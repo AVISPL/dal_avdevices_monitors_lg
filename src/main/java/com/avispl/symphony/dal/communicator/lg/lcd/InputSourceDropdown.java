@@ -78,4 +78,20 @@ public enum InputSourceDropdown {
 	public boolean isPCType() {
 		return isPCType;
 	}
+
+	/**
+	 * Get value of input by name and type
+	 *
+	 * @param name the name is name of input
+	 * @param type the type is boolean type value
+	 * @return String is value of input
+	 */
+	public static String getValueOfEnumByNameAndType(String name, boolean type) {
+		for (InputSourceDropdown inputSourceDropdown : InputSourceDropdown.values()) {
+			if (inputSourceDropdown.getName().equals(name) && type == inputSourceDropdown.isPCType()) {
+				return inputSourceDropdown.getValue();
+			}
+		}
+		return LgLCDConstants.NONE;
+	}
 }

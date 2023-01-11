@@ -171,4 +171,5 @@ public class LgLCDConstants {
 	public static String DOT = ".";
 	public static String INPUT_TYPE = "InputType";
 	public static String TILE_MODE_SETTINGS = "TileModeSettings";
+	public static String PC = "PC";
 }
