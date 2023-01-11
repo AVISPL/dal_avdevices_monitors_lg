@@ -30,8 +30,8 @@ public class LgLCDConstants {
 	}};
 
 	enum commandNames {
-		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME,
-		TILE_MODE, PMD, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME, PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM
+		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME, TILE_MODE_SETTINGS, PMD, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME,
+		PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -47,7 +47,7 @@ public class LgLCDConstants {
 		put(commandNames.FAILOVER_INPUT_LIST, new byte[] { 'm', 'j' });
 		put(commandNames.DATE, new byte[] { 'f', 'a' });
 		put(commandNames.TIME, new byte[] { 'f', 'x' });
-		put(commandNames.TILE_MODE, new byte[] { 'd', 'z' });
+		put(commandNames.TILE_MODE_SETTINGS, new byte[] { 'd', 'z' });
 		put(commandNames.PMD, new byte[] { 'f', 'j' });
 		put(commandNames.BACKLIGHT, new byte[] { 'm', 'g' });
 		put(commandNames.MUTE, new byte[] { 'k', 'e' });
@@ -56,7 +56,12 @@ public class LgLCDConstants {
 		put(commandNames.PMD_MODE_PARAM, new byte[] { '0', 'c', ' ', 'f', 'f' });
 		put(commandNames.INPUT_SOURCE, new byte[] { 'x', 'b' });
 		put(commandNames.NETWORK_SETTING, new byte[] { 's', 'n' });
-		put(commandNames.NETWORK_SETTING_PARAM, new byte[] { '0', '3', ' ', 'f', 'f' });
+		put(commandNames.NETWORK_SETTING_PARAM, new byte[] { '8', '2', ' ', 'f', 'f' });
+		put(commandNames.TILE_ID, new byte[] { 'd', 'i' });
+		put(commandNames.NATURAL_SIZE, new byte[] { 's', 'n' });
+		put(commandNames.NATURAL_SIZE_PARAM, new byte[] { 'a', '5', ' ', 'f', 'f' });
+		put(commandNames.NATURAL_MODE, new byte[] { 'd', 'j' });
+		put(commandNames.TILE_MODE_CONTROL, new byte[] { 'd', 'd' });
 	}};
 
 	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
@@ -108,7 +113,12 @@ public class LgLCDConstants {
 	public static String SOFTWARE_VERSION = "SoftwareVersion";
 	public static String FAILOVER_STATUS = "FailOverMode";
 	public static String DATE_TIME = "DateTime";
-	public static String TILE_MODE_STATUS = "TileMode";
+	public static String TILE_MODE = "TileMode";
+	public static String TILE_MODE_COLUMN = "Column";
+	public static String NATURAL_MODE = "NaturalMode";
+	public static String NATURAL_SIZE = "NaturalSize";
+	public static String TILE_MODE_ROW = "Row";
+	public static String TILE_MODE_ID = "ID";
 	public static String DPM_STATUS = "StandbyMode";
 	public static String START_TIME = "DSTStartTime";
 	public static String END_TIME = "DSTEndTime";
@@ -159,4 +169,6 @@ public class LgLCDConstants {
 	public static String DNS_SERVER = "DNSServer";
 	public static String GATEWAY = "Gateway";
 	public static String DOT = ".";
+	public static String INPUT_TYPE = "InputType";
+	public static String TILE_MODE_SETTINGS = "TileModeSettings";
 }

@@ -20,6 +20,12 @@ public enum FailOverEnum {
 	private final String name;
 	private final String value;
 
+	/**
+	 * FailOverEnum instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 */
 	FailOverEnum(String name, String value) {
 		this.name = name;
 		this.value = value;
@@ -41,14 +47,5 @@ public enum FailOverEnum {
 	 */
 	public String getValue() {
 		return value;
-	}
-
-	public static String getValueByName(String name) {
-		for (FailOverEnum failOverEnum : FailOverEnum.values()) {
-			if (failOverEnum.getName().equals(name)) {
-				return failOverEnum.getValue();
-			}
-		}
-		return "None";
 	}
 }

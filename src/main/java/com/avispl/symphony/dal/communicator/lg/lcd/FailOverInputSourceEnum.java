@@ -31,6 +31,12 @@ public enum FailOverInputSourceEnum {
 	private final String name;
 	private final String value;
 
+	/**
+	 * InputSourceDropdown instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 */
 	FailOverInputSourceEnum(String name, String value) {
 		this.name = name;
 		this.value = value;
@@ -52,23 +58,5 @@ public enum FailOverInputSourceEnum {
 	 */
 	public String getValue() {
 		return value;
-	}
-
-	public static String getNameByValue(String value) {
-		for (FailOverInputSourceEnum failOverInputSourceEnum : FailOverInputSourceEnum.values()) {
-			if (failOverInputSourceEnum.getValue().equals(value)) {
-				return failOverInputSourceEnum.getName();
-			}
-		}
-		return "None";
-	}
-
-	public static String getValueByName(String name) {
-		for (FailOverInputSourceEnum failOverInputSourceEnum : FailOverInputSourceEnum.values()) {
-			if (failOverInputSourceEnum.getName().equals(name)) {
-				return failOverInputSourceEnum.getValue();
-			}
-		}
-		return "None";
 	}
 }

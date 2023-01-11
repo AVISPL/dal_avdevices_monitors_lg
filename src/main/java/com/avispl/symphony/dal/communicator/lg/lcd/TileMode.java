@@ -20,6 +20,13 @@ public enum TileMode {
 	private final String value;
 	private final boolean isStatus;
 
+	/**
+	 * PowerManagement instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 * @param isStatus {@link #isStatus}
+	 */
 	TileMode(String name, String value, boolean isStatus) {
 		this.name = name;
 		this.value = value;

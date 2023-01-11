@@ -22,6 +22,12 @@ public enum PMDModeEnum {
 	private final String name;
 	private final String value;
 
+	/**
+	 * PMDModeEnum instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 */
 	PMDModeEnum(String name, String value) {
 		this.name = name;
 		this.value = value;
@@ -43,23 +49,5 @@ public enum PMDModeEnum {
 	 */
 	public String getValue() {
 		return value;
-	}
-
-	public static String getNameByValue(String value) {
-		for (PMDModeEnum pmdModeEnum : PMDModeEnum.values()) {
-			if (pmdModeEnum.getValue().equals(value)) {
-				return pmdModeEnum.getName();
-			}
-		}
-		throw new IllegalArgumentException("PMD doesn't support value:" + value);
-	}
-
-	public static String getValueByName(String name) {
-		for (PMDModeEnum pmdModeEnum : PMDModeEnum.values()) {
-			if (pmdModeEnum.getName().equals(name)) {
-				return pmdModeEnum.getValue();
-			}
-		}
-		return "None";
 	}
 }

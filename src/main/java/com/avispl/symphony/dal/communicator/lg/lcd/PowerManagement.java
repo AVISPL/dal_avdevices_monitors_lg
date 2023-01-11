@@ -22,6 +22,12 @@ public enum PowerManagement {
 	private final String name;
 	private final String value;
 
+	/**
+	 * PowerManagement instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 */
 	PowerManagement(String name, String value) {
 		this.name = name;
 		this.value = value;
@@ -43,14 +49,5 @@ public enum PowerManagement {
 	 */
 	public String getValue() {
 		return value;
-	}
-
-	public static String getValueByName(String name) {
-		for (PowerManagement powerManagement : PowerManagement.values()) {
-			if (powerManagement.getName().equals(name)) {
-				return powerManagement.getValue();
-			}
-		}
-		return "None";
 	}
 }

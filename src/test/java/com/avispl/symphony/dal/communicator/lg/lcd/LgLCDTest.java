@@ -83,7 +83,7 @@ public class LgLCDTest {
 		Assertions.assertEquals("908KCRNKS718", statistics.get(LgLCDConstants.SERIAL_NUMBER));
 		Assertions.assertEquals("041130", statistics.get(LgLCDConstants.SOFTWARE_VERSION));
 		Assertions.assertEquals("Auto", statistics.get(LgLCDConstants.FAILOVER_STATUS));
-		Assertions.assertEquals("Off", statistics.get(LgLCDConstants.TILE_MODE_STATUS));
+		Assertions.assertEquals("Off", statistics.get(LgLCDConstants.TILE_MODE));
 	}
 
 	/**
@@ -243,12 +243,13 @@ public class LgLCDTest {
 	@Tag("RealDevice")
 	@Test
 	public void testControlVolume() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgControllingCommand.PRIORITY_DOWN.getName();
-		String value = "1";
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgLCDConstants.VOLUME;
+		String value = "20";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
@@ -256,6 +257,234 @@ public class LgLCDTest {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		statistics = extendedStatistic.getStatistics();
 		Assertions.assertEquals("20", statistics.get(property));
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control failover is off
+	 * Expected control failover is off success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlFailoverIsOFF() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_STATUS;
+		String value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("0", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control failover is on
+	 * Expected control failover is on success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlFailoverIsOn() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_STATUS;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control InputPriority is auto
+	 * Expected control InputPriority is auto success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputPriorityIsAuto() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.INPUT_PRIORITY;
+		String value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("0", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control InputPriority is auto
+	 * Expected control InputPriority is auto success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputPriorityIsManual() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.INPUT_PRIORITY;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control priority down
+	 * Expected control control priority down success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputPriorityDown() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_INPUT;
+		String value = "HDMI1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		 property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_DOWN;
+		 value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+	/**
+	 * Test LgLCDDevice.getMultipleStatistics control priority down
+	 * Expected control control priority down success
+	 */
+	@Tag("RealDevice")
+	@Test
+	public void testControlInputPriorityUp() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_INPUT;
+		String value = "HDMI1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.PRIORITY_UP;
+		value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+
+	@Tag("RealDevice")
+	@Test
+	public void testControlTileModeOff() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.TILE_MODE;
+		String value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("0", statistics.get(property));
+	}
+
+	@Tag("RealDevice")
+	@Test
+	public void testControlTileModeON() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.TILE_MODE;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
+	}
+
+	@Tag("RealDevice")
+	@Test
+	public void testControlNaturalModeOff() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_MODE;
+		String value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("0", statistics.get(property));
+	}
+
+	@Tag("RealDevice")
+	@Test
+	public void testControlNaturalModeOn() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_MODE;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("1", statistics.get(property));
 	}
 
 	/**

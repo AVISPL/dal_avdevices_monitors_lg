@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
  */
-
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
@@ -13,35 +12,44 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
  */
 public enum InputSourceDropdown {
 
-	AV("AV", "20"),
-	COMPONENT("", "40"),
-	RGB("RGB", "60"),
-	DVI_D_PC("DVI_D_PC", "70"),
-	DVI_D_DTV("DVI_D_DTV", "80"),
-	HDMI1_DTV("HDMI1_DTV", "90"),
-	HDMI1_PC("HDMI1_PC", "a0"),
-	HDMI2_OPS_DTV("HDMI2_OPS_DTV", "91"),
-	HDMI2_OPS_PC("HDMI2_OPS_PC", "a1"),
-	HDMI3_OPS_DVID_DTV("HDMI3_OPS_DVID_DTV", "92"),
-	HDMI3_OPS_DVID_PC("HDMI3_OPS_DVID_PC", "a2"),
-	OPS_DVID_DTV("OPS_DVID_DTV", "95"),
-	OPS_DVID_PC("OPS_DVID_PC", "a5"),
-	HDMI3_DVID_DTV("HDMI3_DVID_DTV", "96"),
-	HDMI3_DVID_PC("HDMI3_DVID_PC", "a6"),
-	OPS_DTV("OPS_DTV", "98"),
-	OPS_PC("OPS_PC", "a8"),
-	DISPLAYPORT_DTV("DISPLAYPORT_DTV", "c0"),
-	DISPLAYPORT_PC("DISPLAYPORT_PC", "d0"),
-	SUPERSIGN_PLAYER("SUPERSIGN_PLAYER", "e0"),
-	OTHERS("OTHERS", "e1"),
-	MULTI_SCREEN("MULTI_SCREEN", "e2");
+	AV("AV", "20", false),
+	COMPONENT("", "40", false),
+	RGB("RGB", "60", false),
+	DVI_D_PC("DVI", "70", true),
+	DVI_D_DTV("DVI", "80", false),
+	HDMI1_DTV("HDMI1", "90", false),
+	HDMI1_PC("HDMI1", "a0", true),
+	HDMI2_OPS_DTV("HDMI2", "91", false),
+	HDMI2_OPS_PC("HDMI2", "a1", true),
+	HDMI3_OPS_DVID_DTV("HDMI3", "92", false),
+	HDMI3_OPS_DVID_PC("HDMI3", "a2", true),
+	OPS_DVID_DTV("OPS", "95", false),
+	OPS_DVID_PC("OPS", "a5", true),
+	HDMI3_DVID_DTV("HDMI3", "96", false),
+	HDMI3_DVID_PC("HDMI3", "a6", true),
+	OPS_DTV("OPS", "98", false),
+	OPS_PC("OPS", "a8", true),
+	DISPLAYPORT_DTV("DISPLAYPORT", "c0", false),
+	DISPLAYPORT_PC("DISPLAYPORT", "d0", true),
+	SUPERSIGN_PLAYER("SUPERSIGN", "e0", false),
+	OTHERS("OTHERS", "e1", false),
+	MULTI_SCREEN("MULTI_SCREEN", "e2", false);
 
 	private final String name;
 	private final String value;
+	private final boolean isPCType;
 
-	InputSourceDropdown(String name, String value) {
+	/**
+	 * InputSourceDropdown instantiation
+	 *
+	 * @param name {@link #name}
+	 * @param value {@link #value}
+	 * @param isPCType {@link #isPCType}
+	 */
+	InputSourceDropdown(String name, String value, boolean isPCType) {
 		this.name = name;
 		this.value = value;
+		this.isPCType = isPCType;
 	}
 
 	/**
@@ -62,21 +70,12 @@ public enum InputSourceDropdown {
 		return value;
 	}
 
-	public static String getNameByValue(String value) {
-		for (InputSourceDropdown inputSourceDropdown : InputSourceDropdown.values()) {
-			if (inputSourceDropdown.getValue().equals(value)) {
-				return inputSourceDropdown.getName();
-			}
-		}
-		return "None";
-	}
-
-	public static String getValueByName(String name) {
-		for (InputSourceDropdown inputSourceDropdown : InputSourceDropdown.values()) {
-			if (inputSourceDropdown.getName().equals(name)) {
-				return inputSourceDropdown.getValue();
-			}
-		}
-		return "None";
+	/**
+	 * Retrieves {@link #isPCType}
+	 *
+	 * @return value of {@link #isPCType}
+	 */
+	public boolean isPCType() {
+		return isPCType;
 	}
 }

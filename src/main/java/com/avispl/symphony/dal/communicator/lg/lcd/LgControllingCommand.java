@@ -12,24 +12,30 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
  */
 public enum LgControllingCommand {
 
-	VOLUME("Volume", ""),
-	PMD_MODE("PMDMode", ""),
-	MUTE("Mute", ""),
-	INPUT_SOURCE("InputSource", ""),
-	PMD("DPM", ""),
-	BACKLIGHT("BackLight(%)", ""),
-	INPUT_PRIORITY("InputPriority", ""),
-	PRIORITY_UP("PriorityUp", ""),
-	PRIORITY_DOWN("PriorityDown", ""),
-	PRIORITY_INPUT("PriorityInput", ""),
-	FAILOVER_STATUS("FailOverStatus", "");
+	VOLUME("Volume(%)"),
+	PMD_MODE("PMDMode"),
+	MUTE("Mute"),
+	INPUT_SOURCE("Input"),
+	PMD("StandbyMode"),
+	BACKLIGHT("BackLight(%)"),
+	INPUT_PRIORITY("InputPriority"),
+	PRIORITY_UP("PriorityUp"),
+	PRIORITY_DOWN("PriorityDown"),
+	PRIORITY_INPUT("PriorityInput"),
+	FAILOVER_MODE("FailOverMode"),
+	TILE_MODE("TileMode"),
+	NATURAL_MODE("NaturalMode"),
+	INPUT_TYPE("InputType");
 
 	private final String name;
-	private final String command;
 
-	LgControllingCommand(String name, String command) {
+	/**
+	 * InputSourceDropdown instantiation
+	 *
+	 * @param name {@link #name}
+	 */
+	LgControllingCommand(String name) {
 		this.name = name;
-		this.command = command;
 	}
 
 	/**
@@ -42,15 +48,11 @@ public enum LgControllingCommand {
 	}
 
 	/**
-	 * Retrieves {@link #command}
+	 * Get command name by name of property
 	 *
-	 * @return value of {@link #command}
+	 * @param value the value is name of command
+	 * @return LgControllingCommand is LgControllingCommand instance
 	 */
-	public String getCommand() {
-		return command;
-	}
-
-
 	public static LgControllingCommand getCommandByName(String value) {
 		for (LgControllingCommand lgControllingCommand : LgControllingCommand.values()) {
 			if (lgControllingCommand.getName().equalsIgnoreCase(value)) {
