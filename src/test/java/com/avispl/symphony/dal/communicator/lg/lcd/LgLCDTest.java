@@ -32,7 +32,7 @@ public class LgLCDTest {
 
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
 		lgLCDDevice.setHost("172.31.254.160");
 		lgLCDDevice.init();
@@ -40,7 +40,7 @@ public class LgLCDTest {
 	}
 
 	@AfterEach
-	public void destroy() throws Exception {
+	void destroy() throws Exception {
 		lgLCDDevice.disconnect();
 	}
 
@@ -50,7 +50,8 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testLgLCDDeviceGetStatistic() throws Exception {
+	void testLgLCDDeviceGetStatistic() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
 		lgLCDDevice.setHistoricalProperties("Temperature");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> dynamicStatistic = extendedStatistic.getDynamicStatistics();
@@ -70,9 +71,14 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testMonitoringDeviceDashboard() throws Exception {
+	void testMonitoringDeviceDashboard() throws Exception {
+		long daye = System.currentTimeMillis();
+		System.out.println(daye);
+		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
+		daye = System.currentTimeMillis();
+		System.out.println(daye);
 		List<AdvancedControllableProperty> list = extendedStatistic.getControllableProperties();
 
 		Assertions.assertEquals("38", statistics.get(LgLCDConstants.TEMPERATURE));
@@ -92,7 +98,7 @@ public class LgLCDTest {
 	 */
 	@Tag("Mock")
 	@Test
-	public void testDigestResponseFailed1() {
+	void testDigestResponseFailed1() {
 		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
 			byte[] commands = new byte[] { 110 };
 			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
@@ -106,7 +112,7 @@ public class LgLCDTest {
 	 */
 	@Tag("Mock")
 	@Test()
-	public void testDigestResponseFailed2() {
+	void testDigestResponseFailed2() {
 		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
 			byte[] commands = new byte[] { 118, 32, 48, 49, 32, 78, 71 };
 			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
@@ -120,7 +126,7 @@ public class LgLCDTest {
 	 */
 	@Tag("Mock")
 	@Test
-	public void testDigestResponseFanStatusSuccess() {
+	void testDigestResponseFanStatusSuccess() {
 		byte[] commands = new byte[] { 119, 32, 48, 49, 32, 79, 75, 48, 48 };
 		LgLCDConstants.fanStatusNames fanStatusNames = (LgLCDConstants.fanStatusNames) lgLCDDevice.digestResponse(commands, commandNames.FAN_STATUS);
 		Assertions.assertEquals("FAULTY", fanStatusNames.name());
@@ -132,7 +138,8 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlBackLight() throws Exception {
+	void testControlBackLight() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
@@ -154,7 +161,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlDPM() throws Exception {
+	void testControlDPM() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
@@ -176,13 +183,13 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputSource() throws Exception {
+	void testControlInputSource() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
-		String value = PowerManagement.SECOND_10.getName();
+		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.INPUT_SOURCE.getName();
+		String value = InputSourceDropdown.HDMI1_DTV.getName();
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
 		lgLCDDevice.controlProperty(controllableProperty);
@@ -198,7 +205,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlMuteVolume() throws Exception {
+	void testControlMuteVolume() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
@@ -220,7 +227,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void tesControlUnmute() throws Exception {
+	void tesControlUnmute() throws Exception {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
@@ -242,7 +249,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlVolume() throws Exception {
+	void testControlVolume() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -266,7 +273,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlFailoverIsOFF() throws Exception {
+	void testControlFailoverIsOFF() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -289,7 +296,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlFailoverIsOn() throws Exception {
+	void testControlFailoverIsOn() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -312,7 +319,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputPriorityIsAuto() throws Exception {
+	void testControlInputPriorityIsAuto() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -335,7 +342,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputPriorityIsManual() throws Exception {
+	void testControlInputPriorityIsManual() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -358,7 +365,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputPriorityDown() throws Exception {
+	void testControlInputPriorityDown() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -390,7 +397,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputPriorityUp() throws Exception {
+	void testControlInputPriorityUp() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -423,7 +430,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlTileModeOff() throws Exception {
+	void testControlTileModeOff() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -446,7 +453,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlTileModeON() throws Exception {
+	void testControlTileModeON() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -469,7 +476,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlNaturalModeOff() throws Exception {
+	void testControlNaturalModeOff() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -492,7 +499,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlNaturalModeOn() throws Exception {
+	void testControlNaturalModeOn() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
@@ -509,12 +516,40 @@ public class LgLCDTest {
 	}
 
 	/**
+	 * Test LgLCDDevice.getMultipleStatistics control natural on
+	 * Expected control natural on success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigManagementIsFalse() throws Exception {
+		lgLCDDevice.setConfigManagement("false");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics.get("DateTime"));
+		Assertions.assertEquals("172.31.254.16", statistics.get("DNSServer"));
+		Assertions.assertEquals("Auto", statistics.get("FailOverMode"));
+		Assertions.assertEquals("NOT_SUPPORTED", statistics.get("Fan"));
+		Assertions.assertEquals("172.31.254.2", statistics.get("Gateway"));
+		Assertions.assertEquals("HDMI1_PC", statistics.get("Input"));
+		Assertions.assertEquals("SYNC", statistics.get("InputSignal"));
+		Assertions.assertEquals("041130", statistics.get("SoftwareVersion"));
+		Assertions.assertEquals("908KCRNKS718", statistics.get("SerialNumber"));
+		Assertions.assertEquals("On", statistics.get("StandbyMode"));
+		Assertions.assertEquals("255.255.255.0", statistics.get("SubNetmask"));
+		Assertions.assertEquals("41", statistics.get("Temperature(C)"));
+		Assertions.assertEquals("On", statistics.get("TileMode"));
+	}
+
+	/**
 	 * Test lgLCDDevice.digestResponse volume error
 	 * Expected digestResponse volume error
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlVolumeError() throws Exception {
+	void testControlVolumeError() throws Exception {
 		byte[] commands = new byte[] { 102, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
 		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.VOLUME), "expect throw error because response NG");
 	}
@@ -525,7 +560,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testControlInputSourceError() throws Exception {
+	void testControlInputSourceError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
 		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
 	}
@@ -536,7 +571,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testMonitoringControlMuteError() throws Exception {
+	void testMonitoringControlMuteError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
 		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
 	}
@@ -547,7 +582,7 @@ public class LgLCDTest {
 	 */
 	@Tag("RealDevice")
 	@Test
-	public void testMonitoringControlBackLightError() throws Exception {
+	void testMonitoringControlBackLightError() throws Exception {
 		byte[] commands = new byte[] { 103, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
 		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
 	}

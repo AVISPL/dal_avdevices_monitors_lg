@@ -31,7 +31,8 @@ public class LgLCDConstants {
 
 	enum commandNames {
 		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME, TILE_MODE_SETTINGS, PMD, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME,
-		PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL
+		PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL,
+		ASPECT_RATIO, BRIGHTNESS_SIZE, CONTRAST, PICTURE_MODE, BRIGHTNESS, SHARPNESS, SCREEN_COLOR, TINT, COLOR_TEMPERATURE, BALANCE, SOUND_MODE, NO_SIGNAL_POWER_OFF, NO_IR_POWER_OFF, LANGUAGE, POWER_ON_STATUS;
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -61,6 +62,7 @@ public class LgLCDConstants {
 		put(commandNames.NATURAL_SIZE, new byte[] { 's', 'n' });
 		put(commandNames.NATURAL_SIZE_PARAM, new byte[] { 'a', '5', ' ', 'f', 'f' });
 		put(commandNames.NATURAL_MODE, new byte[] { 'd', 'j' });
+		put(commandNames.TILE_MODE_CONTROL, new byte[] { 'd', 'd' });
 		put(commandNames.TILE_MODE_CONTROL, new byte[] { 'd', 'd' });
 	}};
 
@@ -172,4 +174,6 @@ public class LgLCDConstants {
 	public static String INPUT_TYPE = "InputType";
 	public static String TILE_MODE_SETTINGS = "TileModeSettings";
 	public static String PC = "PC";
+	public static String DTV = "DTV";
+	public static String[] INPUT_TYPE_DROPDOWN = { "PC", "DTV" };
 }

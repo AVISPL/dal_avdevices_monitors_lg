@@ -3,6 +3,8 @@
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
+import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
+
 /**
  * LgControllingCommand class defined the enum provides list controlling command
  *
@@ -12,30 +14,36 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
  */
 public enum LgControllingCommand {
 
-	VOLUME("Volume(%)"),
-	PMD_MODE("PMDMode"),
-	MUTE("Mute"),
-	INPUT_SOURCE("Input"),
-	PMD("StandbyMode"),
-	BACKLIGHT("BackLight(%)"),
-	INPUT_PRIORITY("InputPriority"),
-	PRIORITY_UP("PriorityUp"),
-	PRIORITY_DOWN("PriorityDown"),
-	PRIORITY_INPUT("PriorityInput"),
-	FAILOVER_MODE("FailOverMode"),
-	TILE_MODE("TileMode"),
-	NATURAL_MODE("NaturalMode"),
-	INPUT_TYPE("InputType");
+	VOLUME("Volume(%)", false, LgLCDConstants.commandNames.VOLUME),
+	PMD_MODE("PMDMode", false, LgLCDConstants.commandNames.PMD_MODE),
+	MUTE("Mute", false, LgLCDConstants.commandNames.MUTE),
+	INPUT_SOURCE("Input", false, LgLCDConstants.commandNames.INPUT_SOURCE),
+	PMD("StandbyMode", false, LgLCDConstants.commandNames.PMD),
+	BACKLIGHT("BackLight(%)", false, LgLCDConstants.commandNames.BACKLIGHT),
+	INPUT_PRIORITY("InputPriority", false, LgLCDConstants.commandNames.FAILOVER),
+	PRIORITY_UP("PriorityUp", false, LgLCDConstants.commandNames.FAILOVER),
+	PRIORITY_DOWN("PriorityDown", false, LgLCDConstants.commandNames.FAILOVER),
+	PRIORITY_INPUT("PriorityInput", false, LgLCDConstants.commandNames.FAILOVER),
+	FAILOVER_MODE("FailOverMode", false, LgLCDConstants.commandNames.FAILOVER),
+	TILE_MODE("TileMode", false, LgLCDConstants.commandNames.TILE_MODE_CONTROL),
+	NATURAL_MODE("NaturalMode", false, LgLCDConstants.commandNames.NATURAL_MODE),
+	INPUT_TYPE("InputType", false, LgLCDConstants.commandNames.INPUT);
 
 	private final String name;
+	private final boolean isControlType;
+	private commandNames commandNames;
 
 	/**
 	 * InputSourceDropdown instantiation
 	 *
 	 * @param name {@link #name}
+	 * @param isControl {@link #isControlType}
+	 * @param commandNames {@link #commandNames}
 	 */
-	LgControllingCommand(String name) {
+	LgControllingCommand(String name, boolean isControl, commandNames commandNames) {
 		this.name = name;
+		this.isControlType = isControl;
+		this.commandNames = commandNames;
 	}
 
 	/**
@@ -45,6 +53,24 @@ public enum LgControllingCommand {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Retrieves {@link #isControlType}
+	 *
+	 * @return value of {@link #isControlType}
+	 */
+	public boolean isControlType() {
+		return isControlType;
+	}
+
+	/**
+	 * Retrieves {@link #commandNames}
+	 *
+	 * @return value of {@link #commandNames}
+	 */
+	public LgLCDConstants.commandNames getCommandNames() {
+		return commandNames;
 	}
 
 	/**
