@@ -547,7 +547,7 @@ public class LgLCDTest {
 	 * Test lgLCDDevice.digestResponse volume error
 	 * Expected digestResponse volume error
 	 */
-	@Tag("RealDevice")
+	@Tag("Mock")
 	@Test
 	void testControlVolumeError() throws Exception {
 		byte[] commands = new byte[] { 102, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
@@ -558,7 +558,7 @@ public class LgLCDTest {
 	 * Test lgLCDDevice.digestResponse input source error
 	 * Expected digestResponse input source error
 	 */
-	@Tag("RealDevice")
+	@Tag("Mock")
 	@Test
 	void testControlInputSourceError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
@@ -569,7 +569,7 @@ public class LgLCDTest {
 	 * Test lgLCDDevice.digestResponse mute volume error
 	 * Expected digestResponse mute volume error
 	 */
-	@Tag("RealDevice")
+	@Tag("Mock")
 	@Test
 	void testMonitoringControlMuteError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
@@ -580,7 +580,7 @@ public class LgLCDTest {
 	 * Test lgLCDDevice.digestResponse backlight error
 	 * Expected digestResponse backlight error
 	 */
-	@Tag("RealDevice")
+	@Tag("Mock")
 	@Test
 	void testMonitoringControlBackLightError() throws Exception {
 		byte[] commands = new byte[] { 103, 32, 48, 49, 32, 78, 71, 49, 52, 120 };

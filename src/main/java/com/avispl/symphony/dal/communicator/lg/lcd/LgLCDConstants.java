@@ -176,4 +176,5 @@ public class LgLCDConstants {
 	public static String PC = "PC";
 	public static String DTV = "DTV";
 	public static String[] INPUT_TYPE_DROPDOWN = { "PC", "DTV" };
+	public static String COMMA = ",";
 }

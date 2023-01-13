@@ -3,6 +3,8 @@
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
+import java.util.Arrays;
+
 /**
  * InputSourceDropdown class defined the enum provides list input source
  *
@@ -33,7 +35,8 @@ public enum InputSourceDropdown {
 	DISPLAYPORT_PC("DISPLAYPORT", "d0", true),
 	SUPERSIGN_PLAYER("SUPERSIGN", "e0", false),
 	OTHERS("OTHERS", "e1", false),
-	MULTI_SCREEN("MULTI_SCREEN", "e2", false);
+	MULTI_SCREEN("MULTI_SCREEN", "e2", false),
+	NONE("None", "None", false);
 
 	private final String name;
 	private final String value;
@@ -87,11 +90,9 @@ public enum InputSourceDropdown {
 	 * @return String is value of input
 	 */
 	public static String getValueOfEnumByNameAndType(String name, boolean type) {
-		for (InputSourceDropdown inputSourceDropdown : InputSourceDropdown.values()) {
-			if (inputSourceDropdown.getName().equals(name) && type == inputSourceDropdown.isPCType()) {
-				return inputSourceDropdown.getValue();
-			}
-		}
-		return LgLCDConstants.NONE;
+		return Arrays.stream(InputSourceDropdown.values())
+				.filter(inputSourceDropdown -> type == inputSourceDropdown.isPCType)
+				.filter(inputSourceDropdown -> name.equals(inputSourceDropdown.getName())).findFirst()
+				.orElse(InputSourceDropdown.NONE).getName();
 	}
 }
