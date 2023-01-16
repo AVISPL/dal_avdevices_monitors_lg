@@ -1,34 +1,32 @@
 /*
  * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
  */
+
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
 /**
- * PMDModeEnum class defined the enum provides list PDM mode value
+ * PowerStatus class provides during the monitoring and controlling process
  *
  * @author Kevin / Symphony Dev Team<br>
- * Created on 12/28/2022
+ * Created on 1/11/2023
  * @since 1.0.0
  */
-public enum PMDModeEnum {
+public enum PowerStatus {
 
-	POWER_OFF("Power Off", "00"),
-	SUSTAIN_ASPECT_RATIO("Sustain Aspect Ratio", "01"),
-	SCREEN_OFF("Screen Off", "02"),
-	SCREEN_OFF_ALWAYS("Screen Off Always", "03"),
-	SCREEN_OFF_BACKLIGHT_ON("Screen Off & Backlight On", "04"),
-	NETWORK_READY("Network Ready", "05");
+	LST("LST (Last Status)", "00"),
+	STD("STD (Standby)", "01"),
+	PWR("PWR (Power On)", "02");
 
 	private final String name;
 	private final String value;
 
 	/**
-	 * PMDModeEnum instantiation
+	 * PowerStatus instantiation
 	 *
 	 * @param name {@link #name}
 	 * @param value {@link #value}
 	 */
-	PMDModeEnum(String name, String value) {
+	PowerStatus(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}

@@ -15,10 +15,10 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
 public enum LgControllingCommand {
 
 	VOLUME("Volume(%)", false, LgLCDConstants.commandNames.VOLUME),
-	PMD_MODE("PMDMode", false, LgLCDConstants.commandNames.PMD_MODE),
+	PMD_MODE("PowerManagementMode", false, LgLCDConstants.commandNames.PMD_MODE),
 	MUTE("Mute", false, LgLCDConstants.commandNames.MUTE),
 	INPUT_SOURCE("Input", false, LgLCDConstants.commandNames.INPUT_SOURCE),
-	PMD("StandbyMode", false, LgLCDConstants.commandNames.PMD),
+	PMD("DisplayStandbyMode", false, LgLCDConstants.commandNames.PMD),
 	BACKLIGHT("BackLight(%)", false, LgLCDConstants.commandNames.BACKLIGHT),
 	INPUT_PRIORITY("InputPriority", false, LgLCDConstants.commandNames.FAILOVER),
 	PRIORITY_UP("PriorityUp", false, LgLCDConstants.commandNames.FAILOVER),
@@ -27,7 +27,22 @@ public enum LgControllingCommand {
 	FAILOVER_MODE("FailOverMode", false, LgLCDConstants.commandNames.FAILOVER),
 	TILE_MODE("TileMode", false, LgLCDConstants.commandNames.TILE_MODE_CONTROL),
 	NATURAL_MODE("NaturalMode", false, LgLCDConstants.commandNames.NATURAL_MODE),
-	INPUT_TYPE("InputType", false, LgLCDConstants.commandNames.INPUT);
+	INPUT_TYPE("InputType", false, LgLCDConstants.commandNames.INPUT),
+	ASPECT_RATIO("AspectRatio", true, LgLCDConstants.commandNames.ASPECT_RATIO),
+	BRIGHTNESS_SIZE("BrightnessSize", true, LgLCDConstants.commandNames.BRIGHTNESS_SIZE),
+	CONTRAST("Contrast", true, LgLCDConstants.commandNames.CONTRAST),
+	PICTURE_MODE("PictureMode", true, LgLCDConstants.commandNames.PICTURE_MODE),
+	BRIGHTNESS("Brightness", true, LgLCDConstants.commandNames.BRIGHTNESS),
+	SHARPNESS("Sharpness", true, LgLCDConstants.commandNames.SHARPNESS),
+	SCREEN_COLOR("ScreenColor", true, LgLCDConstants.commandNames.SCREEN_COLOR),
+	TINT("Tint", true, LgLCDConstants.commandNames.TINT),
+	COLOR_TEMPERATURE("ColorTemperature", true, LgLCDConstants.commandNames.COLOR_TEMPERATURE),
+	BALANCE("Balance", true, LgLCDConstants.commandNames.BALANCE),
+	SOUND_MODE("SoundMode", true, LgLCDConstants.commandNames.SOUND_MODE),
+	NO_SIGNAL_POWER_OFF("NoSignalPowerOff", true, LgLCDConstants.commandNames.NO_SIGNAL_POWER_OFF),
+	NO_IR_POWER_OFF("NoIRPowerOff", true, LgLCDConstants.commandNames.NO_IR_POWER_OFF),
+	LANGUAGE("Language", true, LgLCDConstants.commandNames.LANGUAGE),
+	POWER_ON_STATUS("PowerOnStatus", true, LgLCDConstants.commandNames.POWER_ON_STATUS);
 
 	private final String name;
 	private final boolean isControlType;

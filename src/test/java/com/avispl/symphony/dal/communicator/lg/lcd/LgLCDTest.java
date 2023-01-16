@@ -144,7 +144,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.BACKLIGHT.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.BACKLIGHT.getName();
 		String value = "20";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -166,7 +166,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
 		String value = PowerManagement.SECOND_10.getName();
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -188,7 +188,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.INPUT_SOURCE.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.INPUT_SOURCE.getName();
 		String value = InputSourceDropdown.HDMI1_DTV.getName();
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -210,7 +210,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
 		String value = "1";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -232,7 +232,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
 		String value = "0";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -255,7 +255,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY_AND_SOUND + LgLCDConstants.HASH + LgLCDConstants.VOLUME;
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.VOLUME;
 		String value = "20";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
