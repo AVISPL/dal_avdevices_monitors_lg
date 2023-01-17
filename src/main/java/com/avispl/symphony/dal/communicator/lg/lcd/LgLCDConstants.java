@@ -164,8 +164,8 @@ public class LgLCDConstants {
 	public static int MAX_RANGE_SCREEN_COLOR = 100;
 	public static int MAX_RANGE_TINT = 100;
 	public static int MAX_RANGE_BALANCE = 100;
-	public static int MIN_RANGE_COLOR_TEMPERATURE = 3200;
-	public static int MAX_RANGE_COLOR_TEMPERATURE = 13000;
+	public static int MIN_RANGE_COLOR_TEMPERATURE = 110;
+	public static int MAX_RANGE_COLOR_TEMPERATURE = 210;
 	public static String MUTE_VALUE = "00";
 	public static String UNMUTE_VALUE = "01";
 	public static String NONE = "None";
@@ -213,8 +213,8 @@ public class LgLCDConstants {
 	public static String SCREEN_COLOR_VALUE = "ScreenColorValue";
 	public static String TINT = "Tint";
 	public static String TINT_VALUE = "TintValue";
-	public static String COLOR_TEMPERATURE = "ColorTemperature(K)";
-	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureValue(K)";
+	public static String COLOR_TEMPERATURE = "ColorTemperature";
+	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureValue";
 	public static String BALANCE = "Balance";
 	public static String BALANCE_VALUE = "BalanceValue";
 	public static String SOUND_MODE = "SoundMode";

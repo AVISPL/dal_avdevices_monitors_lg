@@ -17,7 +17,7 @@ public enum LgControllingCommand {
 	VOLUME("Volume(%)", false, LgLCDConstants.commandNames.VOLUME),
 	PMD_MODE("PowerManagementMode", false, LgLCDConstants.commandNames.PMD_MODE),
 	MUTE("Mute", false, LgLCDConstants.commandNames.MUTE),
-	INPUT_SOURCE("Input", false, LgLCDConstants.commandNames.INPUT_SOURCE),
+	INPUT_SOURCE("InputSelect", false, LgLCDConstants.commandNames.INPUT_SOURCE),
 	PMD("DisplayStandbyMode", false, LgLCDConstants.commandNames.PMD),
 	BACKLIGHT("BackLight(%)", false, LgLCDConstants.commandNames.BACKLIGHT),
 	INPUT_PRIORITY("InputPriority", false, LgLCDConstants.commandNames.FAILOVER),

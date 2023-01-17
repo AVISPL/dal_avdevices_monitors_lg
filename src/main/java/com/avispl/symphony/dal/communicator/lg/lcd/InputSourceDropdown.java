@@ -90,9 +90,27 @@ public enum InputSourceDropdown {
 	 * @return String is value of input
 	 */
 	public static String getValueOfEnumByNameAndType(String name, boolean type) {
+		int count = (int) Arrays.stream(InputSourceDropdown.values()).filter(item->item.getName().equals(name)).count();
+		if(count > 1){
+			return Arrays.stream(InputSourceDropdown.values())
+					.filter(inputSourceDropdown -> type == inputSourceDropdown.isPCType)
+					.filter(inputSourceDropdown -> name.equals(inputSourceDropdown.getName())).findFirst()
+					.orElse(InputSourceDropdown.NONE).getValue();
+		}
 		return Arrays.stream(InputSourceDropdown.values())
-				.filter(inputSourceDropdown -> type == inputSourceDropdown.isPCType)
 				.filter(inputSourceDropdown -> name.equals(inputSourceDropdown.getName())).findFirst()
-				.orElse(InputSourceDropdown.NONE).getName();
+				.orElse(InputSourceDropdown.NONE).getValue();
+	}
+
+	/**
+	 * Get type inout by value
+	 *
+	 * @param value the value is value of input
+	 * @return String is value of input
+	 */
+	public static boolean getTypeOfEnumByValue(String value) {
+		return Arrays.stream(InputSourceDropdown.values())
+				.filter(inputSourceDropdown -> inputSourceDropdown.getValue().equals(value)).findFirst()
+				.orElse(InputSourceDropdown.NONE).isPCType();
 	}
 }
