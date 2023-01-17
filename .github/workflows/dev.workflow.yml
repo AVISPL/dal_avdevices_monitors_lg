@@ -5,8 +5,10 @@ on:
     branches:
       - main
       - master
-      - 'release/**'
+      - develop
+      - 'feature/**'
       - 'bugfix/**'
+      - 'hotfix/**'
 jobs:
   prep:
     runs-on: ubuntu-latest
