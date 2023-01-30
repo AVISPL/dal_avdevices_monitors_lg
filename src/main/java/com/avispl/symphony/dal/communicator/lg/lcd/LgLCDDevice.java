@@ -744,11 +744,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(command), param));
 			String result = digestResponse(response, command).toString();
 			if (LgLCDConstants.NONE.equals(result)) {
-				throw new ResourceNotReachableException(String.format("The response NG reply ", command.name()));
+				throw new IllegalArgumentException(String.format("The response NG reply ", command.name()));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(String.format("Property name %s does not support, The current model does not support control with the above option: " + e.getMessage(), command.name()),
-					e);
+			throw new IllegalArgumentException(String.format("Property name %s does not support, The current model does not support control with the above option: " + e.getMessage(), command.name()), e);
 		}
 	}
 
@@ -924,34 +923,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		statistics.put(LgLCDConstants.INPUT_SELECT, inputSignal);
 		statistics.put(inputGroupName + LgLCDConstants.INPUT_SELECT, inputSignal);
 
-		statistics.put(LgLCDConstants.FAN,
-
-				getFanStatus().
-
-						name());
-
+		statistics.put(LgLCDConstants.FAN, getFanStatus().name());
 		retrieveTemperature(statistics, dynamicStatistics);
 
 		//new feature
 		retrieveDataByCommandName(commandNames.NETWORK_SETTING, commandNames.NETWORK_SETTING_PARAM);
-		statistics.put(LgLCDConstants.DATE_TIME, String.format("%s %s",
-
-				retrieveDataByCommandName(commandNames.DATE, commandNames.GET), retrieveDataByCommandName(commandNames.TIME, commandNames.GET)));
-		statistics.put(LgLCDConstants.FAILOVER_STATUS,
-
-				retrieveDataByCommandName(commandNames.FAILOVER, commandNames.GET));
-		statistics.put(LgLCDConstants.SOFTWARE_VERSION,
-
-				retrieveDataByCommandName(commandNames.SOFTWARE_VERSION, commandNames.GET));
-		statistics.put(LgLCDConstants.TILE_MODE,
-
-				retrieveDataByCommandName(commandNames.TILE_MODE_SETTINGS, commandNames.GET));
-		statistics.put(LgLCDConstants.SERIAL_NUMBER,
-
-				retrieveDataByCommandName(commandNames.SERIAL_NUMBER, commandNames.GET));
-		statistics.put(LgLCDConstants.STAND_BY_MODE,
-
-				retrieveDataByCommandName(commandNames.PMD, commandNames.GET));
+		statistics.put(LgLCDConstants.DATE_TIME, String.format("%s %s", retrieveDataByCommandName(commandNames.DATE, commandNames.GET), retrieveDataByCommandName(commandNames.TIME, commandNames.GET)));
+		statistics.put(LgLCDConstants.FAILOVER_STATUS, retrieveDataByCommandName(commandNames.FAILOVER, commandNames.GET));
+		statistics.put(LgLCDConstants.SOFTWARE_VERSION, retrieveDataByCommandName(commandNames.SOFTWARE_VERSION, commandNames.GET));
+		statistics.put(LgLCDConstants.TILE_MODE, retrieveDataByCommandName(commandNames.TILE_MODE_SETTINGS, commandNames.GET));
+		statistics.put(LgLCDConstants.SERIAL_NUMBER, retrieveDataByCommandName(commandNames.SERIAL_NUMBER, commandNames.GET));
+		statistics.put(LgLCDConstants.STAND_BY_MODE, retrieveDataByCommandName(commandNames.PMD, commandNames.GET));
 		statistics.put(LgLCDConstants.IP_ADDRESS, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.IP_ADDRESS));
 		statistics.put(LgLCDConstants.GATEWAY, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.GATEWAY));
 		statistics.put(LgLCDConstants.SUB_NETMASK, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.SUB_NETMASK));
