@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -357,8 +358,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
 
 							String[] inputSelected = cacheMapOfPriorityInputAndValue.values().toArray(new String[0]);
-							AdvancedControllableProperty controlInputSource = controlDropdown(stats, inputSelected, group + LgLCDConstants.PRIORITY_INPUT,
-									cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst().get().getValue());
+
+							String inputSourceDefaulValue = LgLCDConstants.NONE;
+							Optional<Entry<String, String>> inputSourceOption = cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst();
+							if (inputSourceOption.isPresent()) {
+								inputSourceDefaulValue = inputSourceOption.get().getValue();
+							}
+							AdvancedControllableProperty controlInputSource = controlDropdown(stats, inputSelected, group + LgLCDConstants.PRIORITY_INPUT, inputSourceDefaulValue);
 							advancedControllableProperties.add(controlInputSource);
 						}
 						stats.put(LgLCDConstants.FAILOVER_STATUS, failoverStatus);
@@ -649,7 +655,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param controlStatistics the controlStatistics are list of statistics
 	 * @param advancedControllableProperties the advancedControllableProperties is advancedControllableProperties instance
 	 */
-	private void retrievePowerStatus(List<AdvancedControllableProperty> advancedControllableProperties, Map<String, String> controlStatistics) throws Exception {
+	private void retrievePowerStatus(List<AdvancedControllableProperty> advancedControllableProperties, Map<String, String> controlStatistics) {
 		try {
 			powerStatusNames powerStatus = getPower();
 			//Display a field ControlProtocolStatus : UNAVAILABLE, handle case multiple connections are connected to the device
@@ -716,7 +722,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param advancedControllableProperties the advancedControllableProperties is list AdvancedControllableProperties
 	 */
 	private void updateValueForTheControllableProperty(String property, String value, Map<String, String> extendedStatistics, List<AdvancedControllableProperty> advancedControllableProperties) {
-		if (advancedControllableProperties.size() != 0) {
+		if (!advancedControllableProperties.isEmpty()) {
 			for (AdvancedControllableProperty advancedControllableProperty : advancedControllableProperties) {
 				if (advancedControllableProperty.getName().equals(property)) {
 					extendedStatistics.put(property, value);
@@ -738,7 +744,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(command), param));
 			String result = digestResponse(response, command).toString();
 			if (LgLCDConstants.NONE.equals(result)) {
-				throw new ResourceNotReachableException(String.format("The response NG reply", command.name()));
+				throw new ResourceNotReachableException(String.format("The response NG reply ", command.name()));
 			}
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(String.format("Property name %s does not support, The current model does not support control with the above option: " + e.getMessage(), command.name()),
@@ -906,7 +912,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param statistics the statistics are list of statistics
 	 * @param dynamicStatistics the dynamicStatistics are list of dynamicStatistics
 	 */
-	private void populateMonitoringData(Map<String, String> statistics, Map<String, String> dynamicStatistics) throws Exception {
+	private void populateMonitoringData(Map<String, String> statistics, Map<String, String> dynamicStatistics) {
+
 		//The flow code is handled in the previous version
 		String inputGroupName = LgLCDConstants.INPUT + LgLCDConstants.HASH;
 		String signal = getSyncStatus().name();
@@ -917,16 +924,34 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		statistics.put(LgLCDConstants.INPUT_SELECT, inputSignal);
 		statistics.put(inputGroupName + LgLCDConstants.INPUT_SELECT, inputSignal);
 
-		statistics.put(LgLCDConstants.FAN, getFanStatus().name());
+		statistics.put(LgLCDConstants.FAN,
+
+				getFanStatus().
+
+						name());
+
 		retrieveTemperature(statistics, dynamicStatistics);
+
 		//new feature
 		retrieveDataByCommandName(commandNames.NETWORK_SETTING, commandNames.NETWORK_SETTING_PARAM);
-		statistics.put(LgLCDConstants.DATE_TIME, String.format("%s %s", retrieveDataByCommandName(commandNames.DATE, commandNames.GET), retrieveDataByCommandName(commandNames.TIME, commandNames.GET)));
-		statistics.put(LgLCDConstants.FAILOVER_STATUS, retrieveDataByCommandName(commandNames.FAILOVER, commandNames.GET));
-		statistics.put(LgLCDConstants.SOFTWARE_VERSION, retrieveDataByCommandName(commandNames.SOFTWARE_VERSION, commandNames.GET));
-		statistics.put(LgLCDConstants.TILE_MODE, retrieveDataByCommandName(commandNames.TILE_MODE_SETTINGS, commandNames.GET));
-		statistics.put(LgLCDConstants.SERIAL_NUMBER, retrieveDataByCommandName(commandNames.SERIAL_NUMBER, commandNames.GET));
-		statistics.put(LgLCDConstants.STAND_BY_MODE, retrieveDataByCommandName(commandNames.PMD, commandNames.GET));
+		statistics.put(LgLCDConstants.DATE_TIME, String.format("%s %s",
+
+				retrieveDataByCommandName(commandNames.DATE, commandNames.GET), retrieveDataByCommandName(commandNames.TIME, commandNames.GET)));
+		statistics.put(LgLCDConstants.FAILOVER_STATUS,
+
+				retrieveDataByCommandName(commandNames.FAILOVER, commandNames.GET));
+		statistics.put(LgLCDConstants.SOFTWARE_VERSION,
+
+				retrieveDataByCommandName(commandNames.SOFTWARE_VERSION, commandNames.GET));
+		statistics.put(LgLCDConstants.TILE_MODE,
+
+				retrieveDataByCommandName(commandNames.TILE_MODE_SETTINGS, commandNames.GET));
+		statistics.put(LgLCDConstants.SERIAL_NUMBER,
+
+				retrieveDataByCommandName(commandNames.SERIAL_NUMBER, commandNames.GET));
+		statistics.put(LgLCDConstants.STAND_BY_MODE,
+
+				retrieveDataByCommandName(commandNames.PMD, commandNames.GET));
 		statistics.put(LgLCDConstants.IP_ADDRESS, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.IP_ADDRESS));
 		statistics.put(LgLCDConstants.GATEWAY, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.GATEWAY));
 		statistics.put(LgLCDConstants.SUB_NETMASK, cacheMapOfPropertyNameAndValue.get(LgLCDConstants.SUB_NETMASK));
@@ -1008,8 +1033,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
 
 			String[] inputSelected = cacheMapOfPriorityInputAndValue.values().toArray(new String[0]);
-			String priorityInput = cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst().get().getValue();
-
+			String priorityInput = LgLCDConstants.NONE;
+			Optional<Entry<String, String>> priorityInputOption = cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst();
+			if (priorityInputOption.isPresent()) {
+				priorityInput = priorityInputOption.get().getValue();
+			}
 			cacheMapOfPropertyNameAndValue.put(LgLCDConstants.PRIORITY_INPUT, priorityInput);
 			AdvancedControllableProperty controlInputSource = controlDropdown(controlStatistics, inputSelected, groupName + LgLCDConstants.PRIORITY_INPUT, priorityInput);
 			advancedControllableProperties.add(controlInputSource);
