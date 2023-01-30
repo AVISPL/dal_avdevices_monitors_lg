@@ -17,7 +17,7 @@ public enum FailOverInputSourceEnum {
 	DVI_D("DVI-D", "70"),
 	HDMI1("HDMI1", "90"),
 	HDMI2("HDMI2", "91"),
-	OPS_HDMI3_DVI_D("HDMI3", "92"),
+	OPS_HDMI3_DVI_D("HDMI3/OPS/DVI", "92"),
 	OPS_DVI_D("OPS/DVI-D", "95"),
 	HDMI3_DVI_D("HDMI3/DVI-D", "96"),
 	HDMI3_HDMI2_DVI_D("HDMI3/HDMI2/DVI-D", "97"),

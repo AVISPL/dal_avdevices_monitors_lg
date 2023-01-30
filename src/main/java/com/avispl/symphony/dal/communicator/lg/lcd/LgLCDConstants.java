@@ -164,8 +164,8 @@ public class LgLCDConstants {
 	public static int MAX_RANGE_SCREEN_COLOR = 100;
 	public static int MAX_RANGE_TINT = 100;
 	public static int MAX_RANGE_BALANCE = 100;
-	public static int MIN_RANGE_COLOR_TEMPERATURE = 110;
-	public static int MAX_RANGE_COLOR_TEMPERATURE = 210;
+	public static int MIN_RANGE_COLOR_TEMPERATURE = 3200;
+	public static int MAX_RANGE_COLOR_TEMPERATURE = 13000;
 	public static String MUTE_VALUE = "00";
 	public static String UNMUTE_VALUE = "01";
 	public static String NONE = "None";
@@ -229,4 +229,9 @@ public class LgLCDConstants {
 	public static String NA = "N/A";
 	public static String UNAVAILABLE = "UNAVAILABLE";
 	public static String CONTROL_PROTOCOL_STATUS = "ControlProtocolStatus";
+	public static int COLOR_TEMPERATURE_MAX_VALUE = 210;
+	public static int COLOR_TEMPERATURE_MIN_VALUE = 112;
+	public static int COLOR_TEMPERATURE_UI_MIN_VALUE = 3200;
+	public static int COLOR_TEMPERATURE_UI_MAX_VALUE = 13000;
+	public static int NO_OF_MONITORING_PROPERTY = 35;
 }
