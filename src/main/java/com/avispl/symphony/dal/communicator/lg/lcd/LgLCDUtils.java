@@ -8,6 +8,10 @@ import java.util.List;
 
 /**
  * Class support build String to byte
+ *
+ * @author Kevin / Symphony Dev Team<br>
+ * Created on 30/1/2022
+ * @since 1.0.0
  */
 public class LgLCDUtils {
 

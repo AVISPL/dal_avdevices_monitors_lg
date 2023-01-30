@@ -36,7 +36,7 @@ public enum LgControllingCommand {
 	SHARPNESS("Sharpness", true, LgLCDConstants.commandNames.SHARPNESS),
 	SCREEN_COLOR("ScreenColor", true, LgLCDConstants.commandNames.SCREEN_COLOR),
 	TINT("Tint", true, LgLCDConstants.commandNames.TINT),
-	COLOR_TEMPERATURE("ColorTemperature", true, LgLCDConstants.commandNames.COLOR_TEMPERATURE),
+	COLOR_TEMPERATURE("ColorTemperature(K)", true, LgLCDConstants.commandNames.COLOR_TEMPERATURE),
 	BALANCE("Balance", true, LgLCDConstants.commandNames.BALANCE),
 	SOUND_MODE("SoundMode", true, LgLCDConstants.commandNames.SOUND_MODE),
 	NO_SIGNAL_POWER_OFF("NoSignalPowerOff", true, LgLCDConstants.commandNames.NO_SIGNAL_POWER_OFF),

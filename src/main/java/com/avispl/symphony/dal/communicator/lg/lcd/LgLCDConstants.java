@@ -6,6 +6,13 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Set of constants
+ *
+ * @author Kevin / Symphony Dev Team<br>
+ * Created on 30/1/2022
+ * @since 1.0.0
+ */
 public class LgLCDConstants {
 	enum powerStatusNames {ON, OFF, UNAVAILABLE}
 
@@ -90,7 +97,7 @@ public class LgLCDConstants {
 		put(syncStatusNames.SYNC, new byte[] { '0', '2', '0', '1' });
 	}};
 
-	enum inputNames {HDMI3, HDMI3_PC, AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
+	enum inputNames {PLAY_VIA_URL,HDMI3, HDMI3_PC, AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
 
 	final static Map<inputNames, byte[]> inputs = new HashMap<inputNames, byte[]>() {{
 		put(inputNames.AV, new byte[] { '2', '0' });
@@ -117,6 +124,7 @@ public class LgLCDConstants {
 		put(inputNames.MULTI_SCREEN, new byte[] { 'e', '2' });
 		put(inputNames.HDMI3_PC, new byte[] { 'd', '2' });
 		put(inputNames.HDMI3, new byte[] { 'c', '2' });
+		put(inputNames.PLAY_VIA_URL, new byte[] { 'e', '3' });
 	}};
 
 	enum controlProperties {power, input}
@@ -213,8 +221,8 @@ public class LgLCDConstants {
 	public static String SCREEN_COLOR_VALUE = "ScreenColorValue";
 	public static String TINT = "Tint";
 	public static String TINT_VALUE = "TintValue";
-	public static String COLOR_TEMPERATURE = "ColorTemperature";
-	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureValue";
+	public static String COLOR_TEMPERATURE = "ColorTemperature(K)";
+	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureValue(K)";
 	public static String BALANCE = "Balance";
 	public static String BALANCE_VALUE = "BalanceValue";
 	public static String SOUND_MODE = "SoundMode";

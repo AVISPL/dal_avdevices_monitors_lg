@@ -34,7 +34,7 @@ public class LgLCDTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
-		lgLCDDevice.setHost("172.31.254.160");
+		lgLCDDevice.setHost("172.31.254.175");
 		lgLCDDevice.init();
 		lgLCDDevice.connect();
 	}
@@ -228,11 +228,12 @@ public class LgLCDTest {
 	@Tag("RealDevice")
 	@Test
 	void tesControlUnmute() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
+		String property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgControllingCommand.MUTE.getName();
 		String value = "0";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -585,5 +586,314 @@ public class LgLCDTest {
 	void testMonitoringControlBackLightError() throws Exception {
 		byte[] commands = new byte[] { 103, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
 		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+	}
+
+
+	/**
+	 * Test control Aspect Ratio
+	 * Expected control Aspect Ratio success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlAspectRatio() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.ASPECT_RATIO;
+		String value = "50";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("50", statistics.get(property));
+	}
+
+	/**
+	 * Test control Brightness
+	 * Expected control Brightness success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlBrightness() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.BRIGHTNESS;
+		String value = "50";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals("50", statistics.get(property));
+	}
+
+	/**
+	 * Test control Picture Mode
+	 * Expected control Picture success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlPictureMode() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.PICTURE_MODE;
+		String value = PictureMode.GENERAL.getName();
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Contrast Mode
+	 * Expected control Contrast success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlContrast() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.CONTRAST;
+		String value = "30";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Brightness Mode
+	 * Expected control Brightness success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlBrightnessValue() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.BRIGHTNESS;
+		String value = "30";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Sharpness Mode
+	 * Expected control Sharpness success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlSharpness() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.SHARPNESS;
+		String value = "30";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Color Mode
+	 * Expected control Color success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlColor() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.SCREEN_COLOR;
+		String value = "30";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Tint Mode
+	 * Expected control [Tint success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlTint() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.TINT;
+		String value = "30";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Color Temperature
+	 * Expected control Color Temperature success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlColorTemperature() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgLCDConstants.COLOR_TEMPERATURE;
+		String value = "3600";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Balance
+	 * Expected control Balance success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlBalance() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgLCDConstants.BALANCE;
+		String value = "50";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control Sound Mode
+	 * Expected control Sound Mode success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlSoundMode() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgLCDConstants.SOUND_MODE;
+		String value = "Game";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control No IR Power Off
+	 * Expected control No IR Power Off success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlNoIRPowerOff() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.POWER_MANAGEMENT + LgLCDConstants.HASH + LgLCDConstants.NO_IR_POWER_OFF;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control No Signal Power Off
+	 * Expected control No Signal Power Off success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlNoSignalPoweOff() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.POWER_MANAGEMENT + LgLCDConstants.HASH + LgLCDConstants.NO_SIGNAL_POWER_OFF;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test control language
+	 * Expected control language success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testControlLanguage() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.LANGUAGE;
+		String value = Language.CHINESE.getName();
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
 	}
 }

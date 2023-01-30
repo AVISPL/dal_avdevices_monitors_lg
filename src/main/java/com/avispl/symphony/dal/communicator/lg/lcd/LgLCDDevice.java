@@ -38,15 +38,30 @@ import com.avispl.symphony.dal.util.StringUtils;
 
 /**
  * LG LCD Device Adapter
+ * An implementation of SocketCommunicator to provide communication and interaction with LG device
  *
  * Static Monitored Statistics
  * <li>
- * Input
- * Power
- * Fan
- * SyncStatus
+ * Temperature(C), SerialNumber, SoftwareVersion, InputSignal, InputSelect, Fan, StandbyMode, TileMode,
+ * FailOverMode, SoftwareVersion, SerialNumber, DateTim, SubNetmask, IPAddress, DNSServer, Gateway
  * </li>
  *
+ * Management Control
+ *
+ * Display
+ * <li>
+ * Power, Language, BackLight(%), Mute, Volume(%), AspectRatio, BrightnessSize, PictureMode, Contrast, Brightness, Sharpness, Color, Tint, ColorTemperature(K), Balance, SoundMode
+ * </li>
+ *
+ * FailOver
+ * <li>
+ * FailOverMode, InputPriority, PriorityInput, PriorityUp, PriorityDown
+ * </li>
+ *
+ * Input
+ * <li>
+ * InputType, InputSelect
+ * </li>
  * Historical Monitored Statistics
  * <li> Temperature </li>
  *
@@ -93,6 +108,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			cacheMapOfPropertyNameAndValue.clear();
 		}
 
+		failedMonitor.clear();
 		super.internalDestroy();
 	}
 
@@ -290,7 +306,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 								}
 							}
 						} else if (failOverStatus == LgLCDConstants.NUMBER_ONE) {
-							//cacheMapOfPropertyControlAndValue
 							sendRequestToControlValue(commandNames.FAILOVER, FailOverEnum.AUTO.getValue().getBytes(StandardCharsets.UTF_8));
 							updateValueForTheControllableProperty(property, value, stats, advancedControllableProperties);
 
@@ -570,7 +585,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			Map<String, String> dynamicStatistics = new HashMap<>();
 
 			if (!isEmergencyDelivery) {
-
+				failedMonitor.clear();
 				//Use power command to check if connection is connected, if connection timeout will get timeout exception
 				retrievePowerStatus(advancedControllableProperties, controlStatistics);
 
@@ -579,8 +594,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					populateMonitoringData(statistics, dynamicStatistics);
 					populateControllingData(controlStatistics, advancedControllableProperties);
 
-					if(failedMonitor.size() == LgLCDConstants.NO_OF_MONITORING_PROPERTY){
-					throw new ResourceNotReachableException("Get monitoring data failed fow all property");
+					//If failed for all monitoring data
+					if (failedMonitor.size() == LgLCDConstants.NO_OF_MONITORING_PROPERTY) {
+						throw new ResourceNotReachableException("Get monitoring data failed for all monitoring data");
 					}
 					//destroy channel after collecting all device's information
 					destroyChannel();
@@ -669,7 +685,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		if (StringUtils.isNotNullOrEmpty(apiCurrentValue) && !LgLCDConstants.NONE.equals(apiCurrentValue)) {
 			int a = Integer.parseInt(apiCurrentValue) - apiMinValue;
 			int b = apiMaxValue - apiMinValue;
-			return a * (13000 - 3200) / b + 3200;
+			return a * (LgLCDConstants.COLOR_TEMPERATURE_UI_MAX_VALUE - LgLCDConstants.COLOR_TEMPERATURE_UI_MIN_VALUE) / b + LgLCDConstants.COLOR_TEMPERATURE_UI_MIN_VALUE;
 		}
 		return 0f;
 	}
@@ -686,7 +702,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		if (StringUtils.isNotNullOrEmpty(currentValue) && !LgLCDConstants.NONE.equals(currentValue)) {
 			int a = Integer.parseInt(currentValue) - minValue;
 			int b = maxValue - minValue;
-			return a * (210 - 112) / b + 112;
+			return a * (LgLCDConstants.COLOR_TEMPERATURE_MAX_VALUE - LgLCDConstants.COLOR_TEMPERATURE_MIN_VALUE) / b + LgLCDConstants.COLOR_TEMPERATURE_MIN_VALUE;
 		}
 		return 0f;
 	}
@@ -888,6 +904,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * Populate monitoring data
 	 *
 	 * @param statistics the statistics are list of statistics
+	 * @param dynamicStatistics the dynamicStatistics are list of dynamicStatistics
 	 */
 	private void populateMonitoringData(Map<String, String> statistics, Map<String, String> dynamicStatistics) throws Exception {
 		//The flow code is handled in the previous version
@@ -1073,9 +1090,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * This method is used to get the current display power status
 	 *
 	 * @return powerStatus This returns the calculated xor checksum.
-	 * @throws SocketTimeoutException if the connection is reset many times
+	 * @throws ResourceNotReachableException if the connection is reset many times
 	 */
-	private LgLCDConstants.powerStatusNames getPower() throws Exception {
+	private LgLCDConstants.powerStatusNames getPower() {
 
 		try {
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.commands.get(commandNames.GET)));
@@ -1133,12 +1150,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return inputNames This returns the current input.
 	 */
-	private LgLCDConstants.inputNames getInput() throws Exception {
+	private LgLCDConstants.inputNames getInput() {
 		try {
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(commandNames.INPUT), LgLCDConstants.commands.get(commandNames.GET)));
 			return (LgLCDConstants.inputNames) digestResponse(response, LgLCDConstants.commandNames.INPUT);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new SocketTimeoutException("Connection timed out");
+			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
 		} catch (Exception ex) {
 			logger.error("error during input", ex);
 		}
@@ -1150,13 +1167,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return fanStatusNames This returns the current display fan status.
 	 */
-	private LgLCDConstants.fanStatusNames getFanStatus() throws Exception {
+	private LgLCDConstants.fanStatusNames getFanStatus() {
 		try {
 			byte[] response = send(
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.FAN_STATUS), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 			return (LgLCDConstants.fanStatusNames) digestResponse(response, LgLCDConstants.commandNames.FAN_STATUS);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new SocketTimeoutException("Connection timed out");
+			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
 		} catch (Exception ex) {
 			logger.error("error during get fan status", ex);
 		}
@@ -1169,13 +1186,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return int This returns the current display temperature.
 	 */
-	private Integer getTemperature() throws Exception {
+	private Integer getTemperature() {
 		try {
 			byte[] response = send(
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.TEMPERATURE), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 			return (Integer) digestResponse(response, LgLCDConstants.commandNames.TEMPERATURE);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new SocketTimeoutException("Connection timed out");
+			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
 		} catch (Exception ex) {
 			logger.error("error during get temperature", ex);
 		}
@@ -1188,12 +1205,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 *
 	 * @return syncStatusNames This returns the current display sync status.
 	 */
-	private LgLCDConstants.syncStatusNames getSyncStatus() throws Exception {
+	private LgLCDConstants.syncStatusNames getSyncStatus() {
 		try {
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.STATUS), LgLCDConstants.signalStatus));
 			return (LgLCDConstants.syncStatusNames) digestResponse(response, LgLCDConstants.commandNames.STATUS);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new SocketTimeoutException("Connection timed out");
+			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
 		} catch (Exception ex) {
 			logger.error("error during get sync status", ex);
 		}
@@ -1472,6 +1489,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * Convert value to format month/day/year
 	 *
 	 * @param data the data is data of the response
+	 * @param isTimeFormat the isTimeFormat is boolean value
 	 * @return String is format of date
 	 */
 	private String convertDateFormatByValue(byte[] data, boolean isTimeFormat) {

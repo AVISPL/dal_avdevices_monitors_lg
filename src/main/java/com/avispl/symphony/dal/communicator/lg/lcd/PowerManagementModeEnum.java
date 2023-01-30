@@ -23,7 +23,7 @@ public enum PowerManagementModeEnum {
 	private final String value;
 
 	/**
-	 * PMDModeEnum instantiation
+	 * PowerManagementModeEnum instantiation
 	 *
 	 * @param name {@link #name}
 	 * @param value {@link #value}

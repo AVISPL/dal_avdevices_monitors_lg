@@ -32,7 +32,7 @@ public enum FailOverInputSourceEnum {
 	private final String value;
 
 	/**
-	 * InputSourceDropdown instantiation
+	 * FailOverInputSourceEnum instantiation
 	 *
 	 * @param name {@link #name}
 	 * @param value {@link #value}
