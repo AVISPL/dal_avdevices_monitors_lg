@@ -3,6 +3,7 @@
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
+import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
@@ -1114,12 +1115,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			} else {
 				return power;
 			}
-		} catch (SocketException | SocketTimeoutException e) {
-			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
-		} catch (Exception ex) {
-			logger.error("error during getPower", ex);
-			failedMonitor.add(LgLCDConstants.POWER);
+		} catch (ConnectException ce) {
+			throw new ResourceNotReachableException("Connection time out", ce);
+		} catch (SocketException | SocketTimeoutException se) {
+			logger.error("error during getPower", se);
 			return powerStatusNames.UNAVAILABLE;
+		} catch (Exception e) {
+			logger.error("error during getPower", e);
+			failedMonitor.add(LgLCDConstants.POWER);
+			return powerStatusNames.OFF;
 		}
 	}
 
@@ -1165,7 +1169,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(commandNames.INPUT), LgLCDConstants.commands.get(commandNames.GET)));
 			return (LgLCDConstants.inputNames) digestResponse(response, LgLCDConstants.commandNames.INPUT);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
+			throw new ResourceNotReachableException("Connection time out", e);
 		} catch (Exception ex) {
 			logger.error("error during input", ex);
 		}
@@ -1183,7 +1187,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.FAN_STATUS), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 			return (LgLCDConstants.fanStatusNames) digestResponse(response, LgLCDConstants.commandNames.FAN_STATUS);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
+			throw new ResourceNotReachableException("Connection time out", e);
 		} catch (Exception ex) {
 			logger.error("error during get fan status", ex);
 		}
@@ -1202,7 +1206,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.TEMPERATURE), LgLCDConstants.commands.get(LgLCDConstants.commandNames.GET)));
 			return (Integer) digestResponse(response, LgLCDConstants.commandNames.TEMPERATURE);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
+			throw new ResourceNotReachableException("Connection time out", e);
 		} catch (Exception ex) {
 			logger.error("error during get temperature", ex);
 		}
@@ -1220,7 +1224,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			byte[] response = send(LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.STATUS), LgLCDConstants.signalStatus));
 			return (LgLCDConstants.syncStatusNames) digestResponse(response, LgLCDConstants.commandNames.STATUS);
 		} catch (SocketException | SocketTimeoutException e) {
-			throw new ResourceNotReachableException("Socket reset connect has more than 2 connections to the device", e);
+			throw new ResourceNotReachableException("Connection time out", e);
 		} catch (Exception ex) {
 			logger.error("error during get sync status", ex);
 		}
