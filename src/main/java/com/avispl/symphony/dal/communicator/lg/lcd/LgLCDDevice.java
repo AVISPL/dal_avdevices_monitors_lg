@@ -1320,7 +1320,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						break;
 					case SOFTWARE_VERSION:
 						data = Arrays.copyOfRange(response, 7, 13);
-						return convertByteToValue(data);
+						String softwareVersion = convertByteToValue(data);
+						StringBuilder stringBuilder = new StringBuilder();
+						for (int i = 0; i < softwareVersion.length(); i = i + 2) {
+							stringBuilder.append(softwareVersion.substring(i, i + 2));
+							if (i != softwareVersion.length() - 2) {
+								stringBuilder.append(LgLCDConstants.DOT);
+							}
+						}
+						return stringBuilder.toString();
 					case PMD:
 						String pdm = convertByteToValue(reply);
 						for (PowerManagement name : PowerManagement.values()) {
