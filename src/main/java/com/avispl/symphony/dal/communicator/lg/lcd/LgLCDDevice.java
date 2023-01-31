@@ -1321,6 +1321,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					case SOFTWARE_VERSION:
 						data = Arrays.copyOfRange(response, 7, 13);
 						String softwareVersion = convertByteToValue(data);
+						//Custom software with format xx.xx.xx
 						StringBuilder stringBuilder = new StringBuilder();
 						for (int i = 0; i < softwareVersion.length(); i = i + 2) {
 							stringBuilder.append(softwareVersion.substring(i, i + 2));
