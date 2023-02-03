@@ -569,7 +569,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				}
 			}
 			updateValueForTheControllableProperty(property, value, stats, advancedControllableProperties);
-			destroyChannel();
 		} finally {
 			reentrantLock.unlock();
 		}
