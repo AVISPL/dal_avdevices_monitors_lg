@@ -14,7 +14,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class LgLCDConstants {
-	enum powerStatusNames {ON, OFF, UNAVAILABLE}
+	enum powerStatusNames {ON, OFF, UNAVAILABLE, NONE}
 
 	final static Map<powerStatusNames, byte[]> powerStatus = new HashMap<powerStatusNames, byte[]>() {{
 		put(powerStatusNames.ON, new byte[] { '0', '0' });
@@ -29,7 +29,7 @@ public class LgLCDConstants {
 		put(replyStatusNames.NG, new byte[] { 'N', 'G' });
 	}};
 
-	enum fanStatusNames {FAULTY, NORMAL, NO_FAN, NOT_SUPPORTED}
+	enum fanStatusNames {FAULTY, NORMAL, NO_FAN, NOT_SUPPORTED,NONE}
 
 	final static Map<fanStatusNames, byte[]> fanStatusCodes = new HashMap<fanStatusNames, byte[]>() {{
 		put(fanStatusNames.FAULTY, new byte[] { '0', '0' });
@@ -38,9 +38,9 @@ public class LgLCDConstants {
 	}};
 
 	enum commandNames {
-		POWER, INPUT, TEMPERATURE, FAN_STATUS, STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME, TILE_MODE_SETTINGS, PMD, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SOURCE, MUTE, VOLUME,
-		PMD_MODE, PMD_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL,
-		ASPECT_RATIO, BRIGHTNESS_SIZE, CONTRAST, PICTURE_MODE, BRIGHTNESS, SHARPNESS, SCREEN_COLOR, TINT, COLOR_TEMPERATURE, BALANCE, SOUND_MODE, NO_SIGNAL_POWER_OFF, NO_IR_POWER_OFF, LANGUAGE, POWER_ON_STATUS;
+		POWER, INPUT, TEMPERATURE, FAN_STATUS, SYNC_STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME, TILE_MODE_SETTINGS, DISPLAY_STAND_BY_MODE, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SELECT, MUTE, VOLUME,
+		POWER_MANAGEMENT_MODE, POWER_MANAGEMENT_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL,
+		ASPECT_RATIO, BRIGHTNESS_CONTROL, CONTRAST, PICTURE_MODE, BRIGHTNESS, SHARPNESS, SCREEN_COLOR, TINT, COLOR_TEMPERATURE, BALANCE, SOUND_MODE, NO_SIGNAL_POWER_OFF, NO_IR_POWER_OFF, LANGUAGE, POWER_ON_STATUS;
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -48,7 +48,7 @@ public class LgLCDConstants {
 		put(commandNames.INPUT, new byte[] { 'x', 'b' });
 		put(commandNames.TEMPERATURE, new byte[] { 'd', 'n' });
 		put(commandNames.FAN_STATUS, new byte[] { 'd', 'w' });
-		put(commandNames.STATUS, new byte[] { 's', 'v' });
+		put(commandNames.SYNC_STATUS, new byte[] { 's', 'v' });
 		put(commandNames.GET, new byte[] { 'F', 'F' });
 		put(commandNames.SERIAL_NUMBER, new byte[] { 'f', 'y' });
 		put(commandNames.SOFTWARE_VERSION, new byte[] { 'f', 'z' });
@@ -57,13 +57,13 @@ public class LgLCDConstants {
 		put(commandNames.DATE, new byte[] { 'f', 'a' });
 		put(commandNames.TIME, new byte[] { 'f', 'x' });
 		put(commandNames.TILE_MODE_SETTINGS, new byte[] { 'd', 'z' });
-		put(commandNames.PMD, new byte[] { 'f', 'j' });
+		put(commandNames.DISPLAY_STAND_BY_MODE, new byte[] { 'f', 'j' });
 		put(commandNames.BACKLIGHT, new byte[] { 'm', 'g' });
 		put(commandNames.MUTE, new byte[] { 'k', 'e' });
 		put(commandNames.VOLUME, new byte[] { 'k', 'f' });
-		put(commandNames.PMD_MODE, new byte[] { 's', 'n' });
-		put(commandNames.PMD_MODE_PARAM, new byte[] { '0', 'c', ' ', 'f', 'f' });
-		put(commandNames.INPUT_SOURCE, new byte[] { 'x', 'b' });
+		put(commandNames.POWER_MANAGEMENT_MODE, new byte[] { 's', 'n' });
+		put(commandNames.POWER_MANAGEMENT_MODE_PARAM, new byte[] { '0', 'c', ' ', 'f', 'f' });
+		put(commandNames.INPUT_SELECT, new byte[] { 'x', 'b' });
 		put(commandNames.NETWORK_SETTING, new byte[] { 's', 'n' });
 		put(commandNames.NETWORK_SETTING_PARAM, new byte[] { '8', '2', ' ', 'f', 'f' });
 		put(commandNames.TILE_ID, new byte[] { 'd', 'i' });
@@ -72,7 +72,7 @@ public class LgLCDConstants {
 		put(commandNames.NATURAL_MODE, new byte[] { 'd', 'j' });
 		put(commandNames.TILE_MODE_CONTROL, new byte[] { 'd', 'd' });
 		put(commandNames.ASPECT_RATIO, new byte[] { 'k', 'c' });
-		put(commandNames.BRIGHTNESS_SIZE, new byte[] { 'j', 'q' });
+		put(commandNames.BRIGHTNESS_CONTROL, new byte[] { 'j', 'q' });
 		put(commandNames.CONTRAST, new byte[] { 'k', 'g' });
 		put(commandNames.PICTURE_MODE, new byte[] { 'd', 'x' });
 		put(commandNames.BRIGHTNESS, new byte[] { 'k', 'h' });
@@ -90,14 +90,14 @@ public class LgLCDConstants {
 
 	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
 
-	enum syncStatusNames {NO_SYNC, SYNC}
+	enum syncStatusNames {NO_SYNC, SYNC,NONE}
 
 	final static Map<syncStatusNames, byte[]> syncStatusCodes = new HashMap<syncStatusNames, byte[]>() {{
 		put(syncStatusNames.NO_SYNC, new byte[] { '0', '2', '0', '0' });
 		put(syncStatusNames.SYNC, new byte[] { '0', '2', '0', '1' });
 	}};
 
-	enum inputNames {PLAY_VIA_URL,HDMI3, HDMI3_PC, AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
+	enum inputNames {PLAY_VIA_URL, HDMI3_DTV, HDMI3_PC, AV, COMPONENT, RGB, DVI_D_PC, DVI_D_DTV, HDMI1_DTV, HDMI1_PC, HDMI2_OPS_DTV, HDMI2_OPS_PC, HDMI3_OPS_DVID_DTV, HDMI3_OPS_DVID_PC, OPS_DVID_DTV, OPS_DVID_PC, HDMI3_DVID_DTV, HDMI3_DVID_PC, OPS_DTV, OPS_PC, DISPLAYPORT_DTV, DISPLAYPORT_PC, SUPERSIGN_PLAYER, OTHERS, MULTI_SCREEN, OFF}
 
 	final static Map<inputNames, byte[]> inputs = new HashMap<inputNames, byte[]>() {{
 		put(inputNames.AV, new byte[] { '2', '0' });
@@ -123,7 +123,7 @@ public class LgLCDConstants {
 		put(inputNames.OTHERS, new byte[] { 'e', '1' });
 		put(inputNames.MULTI_SCREEN, new byte[] { 'e', '2' });
 		put(inputNames.HDMI3_PC, new byte[] { 'd', '2' });
-		put(inputNames.HDMI3, new byte[] { 'c', '2' });
+		put(inputNames.HDMI3_DTV, new byte[] { 'c', '2' });
 		put(inputNames.PLAY_VIA_URL, new byte[] { 'e', '3' });
 	}};
 
@@ -136,14 +136,14 @@ public class LgLCDConstants {
 	public static String SIGNAL = "InputSignal";
 	public static String SERIAL_NUMBER = "SerialNumber";
 	public static String SOFTWARE_VERSION = "SoftwareVersion";
-	public static String FAILOVER_STATUS = "FailOverMode";
+	public static String FAILOVER_MODE = "FailOverMode";
 	public static String DATE_TIME = "DateTime";
 	public static String TILE_MODE = "TileMode";
 	public static String TILE_MODE_COLUMN = "Column";
 	public static String NATURAL_MODE = "NaturalMode";
 	public static String NATURAL_SIZE = "NaturalSize";
 	public static String TILE_MODE_ROW = "Row";
-	public static String TILE_MODE_ID = "ID";
+	public static String TILE_MODE_ID = "TileID";
 	public static String START_TIME = "DSTStartTime";
 	public static String END_TIME = "DSTEndTime";
 	public static String DISPLAY = "Display";
@@ -153,15 +153,16 @@ public class LgLCDConstants {
 	public static String FAILOVER = "FailOver";
 	public static String HASH = "#";
 	public static String BACKLIGHT = "BackLight(%)";
-	public static String BACKLIGHT_VALUE = "BacklightValue(%)";
+	public static String BACKLIGHT_VALUE = "BacklightCurrentValue(%)";
 	public static String INPUT_SELECT = "InputSelect";
+	public static String FAILOVER_INPUT_LIST = "InputList";
 	public static String MUTE = "Mute";
 	public static String VOLUME = "Volume(%)";
-	public static String VOLUME_VALUE = "VolumeValue(%)";
+	public static String VOLUME_VALUE = "VolumeCurrentValue(%)";
 	public static String ON = "On";
 	public static String OFF = "Off";
-	public static String PM_MODE = "PowerManagementMode";
-	public static String STAND_BY_MODE = "DisplayStandbyMode";
+	public static String POWER_MANAGEMENT_MODE = "PowerManagementMode";
+	public static String DISPLAY_STAND_BY_MODE = "DisplayStandbyMode";
 	public static int NUMBER_ONE = 1;
 	public static int ZERO = 0;
 	public static int MAX_RANGE_BACKLIGHT = 100;
@@ -204,27 +205,26 @@ public class LgLCDConstants {
 	public static String DNS_SERVER = "DNSServer";
 	public static String GATEWAY = "Gateway";
 	public static String DOT = ".";
-	public static String INPUT_TYPE = "InputType";
 	public static String TILE_MODE_SETTINGS = "TileModeSettings";
 	public static String PC = "PC";
 	public static String DTV = "DTV";
 	public static String ASPECT_RATIO = "AspectRatio";
-	public static String BRIGHTNESS_SIZE = "BrightnessSize";
+	public static String BRIGHTNESS_CONTROL = "BrightnessControl";
 	public static String CONTRAST = "Contrast";
-	public static String CONTRAST_VALUE = "ContrastValue";
+	public static String CONTRAST_VALUE = "ContrastCurrentValue";
 	public static String PICTURE_MODE = "PictureMode";
 	public static String BRIGHTNESS = "Brightness";
-	public static String BRIGHTNESS_VALUE = "BrightnessValue";
+	public static String BRIGHTNESS_VALUE = "BrightnessCurrentValue";
 	public static String SHARPNESS = "Sharpness";
-	public static String SHARPNESS_VALUE = "SharpnessValue";
+	public static String SHARPNESS_VALUE = "SharpnessCurrentValue";
 	public static String SCREEN_COLOR = "ScreenColor";
-	public static String SCREEN_COLOR_VALUE = "ScreenColorValue";
+	public static String SCREEN_COLOR_VALUE = "ScreenColorCurrentValue";
 	public static String TINT = "Tint";
-	public static String TINT_VALUE = "TintValue";
+	public static String TINT_VALUE = "TintCurrentValue";
 	public static String COLOR_TEMPERATURE = "ColorTemperature(K)";
-	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureValue(K)";
+	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureCurrentValue(K)";
 	public static String BALANCE = "Balance";
-	public static String BALANCE_VALUE = "BalanceValue";
+	public static String BALANCE_VALUE = "BalanceCurrentValue";
 	public static String SOUND_MODE = "SoundMode";
 	public static String NO_SIGNAL_POWER_OFF = "NoSignalPowerOff";
 	public static String NO_IR_POWER_OFF = "NoIRPowerOff";
@@ -237,9 +237,17 @@ public class LgLCDConstants {
 	public static String NA = "N/A";
 	public static String UNAVAILABLE = "UNAVAILABLE";
 	public static String CONTROL_PROTOCOL_STATUS = "ControlProtocolStatus";
+	public static String DATE = "Date";
+	public static String TIME = "Time";
+	public static String NULL_STRING_VALUE = "null";
+	public static String NETWORK_SETTING = "NetworkSetting";
+	public static String PLAY_VIA_URL = "PLAY_VIA_URL";
 	public static int COLOR_TEMPERATURE_MAX_VALUE = 210;
 	public static int COLOR_TEMPERATURE_MIN_VALUE = 112;
 	public static int COLOR_TEMPERATURE_UI_MIN_VALUE = 3200;
 	public static int COLOR_TEMPERATURE_UI_MAX_VALUE = 13000;
 	public static int NO_OF_MONITORING_PROPERTY = 35;
+	public static int DEFAULT_CACHING_LIFETIME = 5;
+	public static int MIN_DELAY_TIME = 200;
+	public static int MAX_DELAY_TIME = 1000;
 }
