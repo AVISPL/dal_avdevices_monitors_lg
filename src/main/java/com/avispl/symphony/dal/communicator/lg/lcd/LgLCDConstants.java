@@ -14,7 +14,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class LgLCDConstants {
-	enum powerStatusNames {ON, OFF, UNAVAILABLE, NONE}
+	enum powerStatusNames {ON, OFF, UNAVAILABLE}
 
 	final static Map<powerStatusNames, byte[]> powerStatus = new HashMap<powerStatusNames, byte[]>() {{
 		put(powerStatusNames.ON, new byte[] { '0', '0' });
@@ -29,7 +29,7 @@ public class LgLCDConstants {
 		put(replyStatusNames.NG, new byte[] { 'N', 'G' });
 	}};
 
-	enum fanStatusNames {FAULTY, NORMAL, NO_FAN, NOT_SUPPORTED,NONE}
+	enum fanStatusNames {FAULTY, NORMAL, NO_FAN, NOT_SUPPORTED}
 
 	final static Map<fanStatusNames, byte[]> fanStatusCodes = new HashMap<fanStatusNames, byte[]>() {{
 		put(fanStatusNames.FAULTY, new byte[] { '0', '0' });
@@ -91,7 +91,7 @@ public class LgLCDConstants {
 
 	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
 
-	enum syncStatusNames {NO_SYNC, SYNC,NONE}
+	enum syncStatusNames {NO_SYNC, SYNC}
 
 	final static Map<syncStatusNames, byte[]> syncStatusCodes = new HashMap<syncStatusNames, byte[]>() {{
 		put(syncStatusNames.NO_SYNC, new byte[] { '0', '2', '0', '0' });
@@ -178,7 +178,6 @@ public class LgLCDConstants {
 	public static int MAX_RANGE_COLOR_TEMPERATURE = 13000;
 	public static String MUTE_VALUE = "00";
 	public static String UNMUTE_VALUE = "01";
-	public static String NONE = "None";
 	public static String EMPTY_STRING = "";
 	public static String COLON = ":";
 	public static String SPACE = " ";
@@ -202,7 +201,7 @@ public class LgLCDConstants {
 	public static String AM = "AM";
 	public static String PM = "PM";
 	public static String IP_ADDRESS = "IPAddress";
-	public static String SUB_NETMASK = "SubNetmask";
+	public static String SUBNET_MASK = "SubnetMask";
 	public static String DNS_SERVER = "DNSServer";
 	public static String GATEWAY = "Gateway";
 	public static String DOT = ".";
@@ -249,6 +248,10 @@ public class LgLCDConstants {
 	public static int COLOR_TEMPERATURE_UI_MAX_VALUE = 13000;
 	public static int DEFAULT_CACHING_LIFETIME = 5;
 	public static int MIN_DELAY_TIME = 200;
-	public static int MAX_DELAY_TIME = 1000;
-	public static int POLLING_INTERVAL_DEFAULT = 2;
+	public static int DEFAULT_DELAY_TIME = 400;
+	public static int MAX_DELAY_TIME = 500;
+	public static int DEFAULT_CONFIG_TIMEOUT = 1200;
+	public static int MIN_CONFIG_TIMEOUT = 1000;
+	public static int MAX_CONFIG_TIMEOUT = 4000;
+	public static int DEFAULT_POLLING_INTERVAL = 2;
 }

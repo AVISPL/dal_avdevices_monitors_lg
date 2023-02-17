@@ -56,10 +56,10 @@ public class EnumTypeHandler {
 					return (String) method.invoke(c);
 				}
 			} catch (Exception e) {
-				return LgLCDConstants.NONE;
+				return LgLCDConstants.NA;
 			}
 		}
-		return LgLCDConstants.NONE;
+		return LgLCDConstants.NA;
 	}
 
 	/**
@@ -80,9 +80,9 @@ public class EnumTypeHandler {
 					return (String) method.invoke(c);
 				}
 			} catch (Exception e) {
-				return LgLCDConstants.NONE;
+				return LgLCDConstants.NA;
 			}
 		}
-		return LgLCDConstants.NONE;
+		return LgLCDConstants.NA;
 	}
 }

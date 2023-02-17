@@ -21,8 +21,6 @@ public enum LgControllingCommand {
 
 	FAILOVER_INPUT_LIST(LgLCDConstants.FAILOVER_INPUT_LIST, true, false, LgLCDConstants.commandNames.FAILOVER_INPUT_LIST),
 	TILE_ID(LgLCDConstants.TILE_MODE_ID, true, false, LgLCDConstants.commandNames.TILE_ID),
-	NATURAL_MODE(LgLCDConstants.NATURAL_MODE, true, false, LgLCDConstants.commandNames.NATURAL_MODE),
-	NATURAL_SIZE(LgLCDConstants.NATURAL_SIZE, true, false, LgLCDConstants.commandNames.NATURAL_SIZE),
 	SOFTWARE_VERSION(LgLCDConstants.SOFTWARE_VERSION, true, false, LgLCDConstants.commandNames.SOFTWARE_VERSION),
 	TILE_MODE_SETTINGS(LgLCDConstants.TILE_MODE_SETTINGS, true, false, LgLCDConstants.commandNames.TILE_MODE_SETTINGS),
 	SERIAL_NUMBER(LgLCDConstants.SERIAL_NUMBER, true, false, LgLCDConstants.commandNames.SERIAL_NUMBER),
@@ -33,6 +31,7 @@ public enum LgControllingCommand {
 	VOLUME(LgLCDConstants.VOLUME, false, true, LgLCDConstants.commandNames.VOLUME),
 	MUTE(LgLCDConstants.MUTE, false, true, LgLCDConstants.commandNames.MUTE),
 	POWER_MANAGEMENT_MODE(LgLCDConstants.POWER_MANAGEMENT_MODE, false, true, LgLCDConstants.commandNames.POWER_MANAGEMENT_MODE),
+	NATURAL_MODE(LgLCDConstants.NATURAL_MODE, true, false, LgLCDConstants.commandNames.NATURAL_MODE),
 	INPUT_SELECT(LgLCDConstants.INPUT_SELECT, true, false, LgLCDConstants.commandNames.INPUT_SELECT),
 	BACKLIGHT(LgLCDConstants.BACKLIGHT, false, true, LgLCDConstants.commandNames.BACKLIGHT),
 	TILE_MODE(LgLCDConstants.TILE_MODE, true, false, LgLCDConstants.commandNames.TILE_MODE_CONTROL),
@@ -41,6 +40,7 @@ public enum LgControllingCommand {
 	FAN_STATUS(LgLCDConstants.FAN, true, false, LgLCDConstants.commandNames.FAN_STATUS),
 	SYNC_STATUS(LgLCDConstants.SIGNAL, true, false, LgLCDConstants.commandNames.SYNC_STATUS),
 	FAILOVER(LgLCDConstants.FAILOVER_MODE, true, false, LgLCDConstants.commandNames.FAILOVER),
+	NATURAL_SIZE(LgLCDConstants.NATURAL_SIZE, true, false, LgLCDConstants.commandNames.NATURAL_SIZE),
 
 	ASPECT_RATIO(LgLCDConstants.ASPECT_RATIO, false, true, LgLCDConstants.commandNames.ASPECT_RATIO),
 	BRIGHTNESS_CONTROL(LgLCDConstants.BRIGHTNESS_CONTROL, false, true, LgLCDConstants.commandNames.BRIGHTNESS_CONTROL),
