@@ -34,7 +34,7 @@ public class LgLCDTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
-		lgLCDDevice.setHost("172.31.254.175");
+		lgLCDDevice.setHost("172.31.254.160");
 		lgLCDDevice.init();
 		lgLCDDevice.connect();
 	}
@@ -88,7 +88,7 @@ public class LgLCDTest {
 		Assertions.assertEquals("1", statistics.get(LgLCDConstants.POWER));
 		Assertions.assertEquals("908KCRNKS718", statistics.get(LgLCDConstants.SERIAL_NUMBER));
 		Assertions.assertEquals("041130", statistics.get(LgLCDConstants.SOFTWARE_VERSION));
-		Assertions.assertEquals("Auto", statistics.get(LgLCDConstants.FAILOVER_STATUS));
+		Assertions.assertEquals("Auto", statistics.get(LgLCDConstants.FAILOVER));
 		Assertions.assertEquals("Off", statistics.get(LgLCDConstants.TILE_MODE));
 	}
 
@@ -101,7 +101,7 @@ public class LgLCDTest {
 	void testDigestResponseFailed1() {
 		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
 			byte[] commands = new byte[] { 110 };
-			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+			lgLCDDevice.digestResponse(commands, commandNames.SYNC_STATUS);
 		});
 		Assertions.assertEquals("Error Unexpected reply", exception.getMessage());
 	}
@@ -115,7 +115,7 @@ public class LgLCDTest {
 	void testDigestResponseFailed2() {
 		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
 			byte[] commands = new byte[] { 118, 32, 48, 49, 32, 78, 71 };
-			lgLCDDevice.digestResponse(commands, commandNames.STATUS);
+			lgLCDDevice.digestResponse(commands, commandNames.SYNC_STATUS);
 		});
 		Assertions.assertEquals("NG reply", exception.getMessage());
 	}
@@ -166,7 +166,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.PMD.getName();
+		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.POWER_MANAGEMENT_MODE.getName();
 		String value = PowerManagement.SECOND_10.getName();
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -188,7 +188,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.DISPLAY + LgLCDConstants.HASH + LgControllingCommand.INPUT_SOURCE.getName();
+		String property = LgLCDConstants.INPUT + LgLCDConstants.HASH + LgControllingCommand.INPUT_SELECT.getName();
 		String value = InputSourceDropdown.HDMI1_DTV.getName();
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -280,7 +280,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_STATUS;
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_MODE;
 		String value = "0";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -303,7 +303,7 @@ public class LgLCDTest {
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
 		ControllableProperty controllableProperty = new ControllableProperty();
-		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_STATUS;
+		String property = LgLCDConstants.FAILOVER + LgLCDConstants.HASH + LgLCDConstants.FAILOVER_MODE;
 		String value = "1";
 		controllableProperty.setProperty(property);
 		controllableProperty.setValue(value);
@@ -433,6 +433,7 @@ public class LgLCDTest {
 	@Test
 	void testControlTileModeOff() throws Exception {
 		lgLCDDevice.setConfigManagement("true");
+		System.out.println(System.currentTimeMillis());
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		Map<String, String> statistics = extendedStatistic.getStatistics();
 
@@ -563,7 +564,7 @@ public class LgLCDTest {
 	@Test
 	void testControlInputSourceError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
-		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SELECT), "expect throw error because response NG");
 	}
 
 	/**
@@ -574,7 +575,7 @@ public class LgLCDTest {
 	@Test
 	void testMonitoringControlMuteError() throws Exception {
 		byte[] commands = new byte[] { 98, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
-		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SELECT), "expect throw error because response NG");
 	}
 
 	/**
@@ -585,7 +586,7 @@ public class LgLCDTest {
 	@Test
 	void testMonitoringControlBackLightError() throws Exception {
 		byte[] commands = new byte[] { 103, 32, 48, 49, 32, 78, 71, 49, 52, 120 };
-		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SOURCE), "expect throw error because response NG");
+		Assertions.assertThrows(ResourceNotReachableException.class, () -> lgLCDDevice.digestResponse(commands, commandNames.INPUT_SELECT), "expect throw error because response NG");
 	}
 
 
@@ -895,5 +896,62 @@ public class LgLCDTest {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		statistics = extendedStatistic.getStatistics();
 		Assertions.assertEquals(value, statistics.get(property));
+	}
+
+	/**
+	 * Test config polling interval
+	 * Expected  config polling interval success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingIntervalDefault() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
+	}
+
+	/**
+	 * Test config polling interval with pollingInterval < 2
+	 * Expected  config polling interval will be 2
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingInterval() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		lgLCDDevice.setPollingInterval("1");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
+	}
+
+	/**
+	 * Test config polling interval with pollingInterval is greater than 2 intervals
+	 * Expected  config polling interval will be 2
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingIntervalIsGreaterThanTwo() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		lgLCDDevice.setPollingInterval("3");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNull(statistics);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
 	}
 }
