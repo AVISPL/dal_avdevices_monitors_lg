@@ -247,11 +247,11 @@ public class LgLCDConstants {
 	public static int COLOR_TEMPERATURE_UI_MIN_VALUE = 3200;
 	public static int COLOR_TEMPERATURE_UI_MAX_VALUE = 13000;
 	public static int DEFAULT_CACHING_LIFETIME = 5;
-	public static int MIN_DELAY_TIME = 200;
+	public static int MAX_CACHING_LIFETIME = 5;
+	public static int MIN_DELAY_TIME = 100;
 	public static int DEFAULT_DELAY_TIME = 400;
 	public static int MAX_DELAY_TIME = 500;
-	public static int DEFAULT_CONFIG_TIMEOUT = 2500;
-	public static int MIN_CONFIG_TIMEOUT = 1000;
+	public static int DEFAULT_CONFIG_TIMEOUT = 2000;
 	public static int MAX_CONFIG_TIMEOUT = 3000;
 	public static int DEFAULT_POLLING_INTERVAL = 2;
 }
