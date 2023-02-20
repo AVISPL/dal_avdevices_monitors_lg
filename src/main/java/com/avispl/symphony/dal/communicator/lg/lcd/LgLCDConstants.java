@@ -226,8 +226,8 @@ public class LgLCDConstants {
 	public static String BALANCE = "Balance";
 	public static String BALANCE_VALUE = "BalanceCurrentValue";
 	public static String SOUND_MODE = "SoundMode";
-	public static String NO_SIGNAL_POWER_OFF = "NoSignalPowerOff";
-	public static String NO_IR_POWER_OFF = "NoIRPowerOff";
+	public static String NO_SIGNAL_POWER_OFF = "NoSignalPowerOff(15Min)";
+	public static String NO_IR_POWER_OFF = "NoIRPowerOff(4hour)";
 	public static String LANGUAGE = "Language";
 	public static String TIME_ELAPSED = "TimeElapsed";
 	public static String POWER_ON_STATUS = "PowerOnStatus";
@@ -250,8 +250,8 @@ public class LgLCDConstants {
 	public static int MIN_DELAY_TIME = 200;
 	public static int DEFAULT_DELAY_TIME = 400;
 	public static int MAX_DELAY_TIME = 500;
-	public static int DEFAULT_CONFIG_TIMEOUT = 1200;
+	public static int DEFAULT_CONFIG_TIMEOUT = 2500;
 	public static int MIN_CONFIG_TIMEOUT = 1000;
-	public static int MAX_CONFIG_TIMEOUT = 4000;
+	public static int MAX_CONFIG_TIMEOUT = 3000;
 	public static int DEFAULT_POLLING_INTERVAL = 2;
 }
