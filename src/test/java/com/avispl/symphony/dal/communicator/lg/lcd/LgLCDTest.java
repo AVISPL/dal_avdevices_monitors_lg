@@ -897,4 +897,61 @@ public class LgLCDTest {
 		statistics = extendedStatistic.getStatistics();
 		Assertions.assertEquals(value, statistics.get(property));
 	}
+
+	/**
+	 * Test config polling interval
+	 * Expected  config polling interval success
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingIntervalDefault() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
+	}
+
+	/**
+	 * Test config polling interval with pollingInterval < 2
+	 * Expected  config polling interval will be 2
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingInterval() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		lgLCDDevice.setPollingInterval("1");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
+	}
+
+	/**
+	 * Test config polling interval with pollingInterval is greater than 2 intervals
+	 * Expected  config polling interval will be 2
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testConfigPollingIntervalIsGreaterThanTwo() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		lgLCDDevice.setPollingInterval("3");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		Assertions.assertNull(statistics);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNull(statistics);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertNotNull(statistics);
+	}
 }

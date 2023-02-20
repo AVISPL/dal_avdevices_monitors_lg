@@ -80,7 +80,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	int monitorID;
 	private int countMonitorAndControlMetric = 0;
 	private int defaultConfigTimeout;
-	private int cachingCurrentLifetime;
+	private int currentCachingLifetime;
 	private int pollingIntervalCurrentValue;
 	private int getMultipleTime = 0;
 	private boolean isEmergencyDelivery;
@@ -89,37 +89,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private Map<String, String> cacheMapOfPriorityInputAndValue = new HashMap<>();
 	private ExtendedStatistics localExtendedStatistics;
 
-	@Override
-	public byte[] send(byte[] data) throws Exception {
-		try {
-			long currentTime = System.currentTimeMillis() - lastCommandTimestamp;
-			//check next command wait commandsCoolDownDelay time
-			if (currentTime < commandsCoolDownDelay) {
-				Thread.sleep(commandsCoolDownDelay - currentTime);
-			}
-			lastCommandTimestamp = System.currentTimeMillis();
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("Issuing command %s, timestamp: %s", data, lastCommandTimestamp));
-			}
-			return super.send(data);
-		} finally {
-			logger.debug("send data command successfully");
-		}
-	}
-
-	@Override
-	protected void internalInit() throws Exception {
-		executorService = Executors.newFixedThreadPool(1);
-		executorService2 = Executors.newFixedThreadPool(1);
-		super.internalInit();
-	}
-
 	/**
 	 * To avoid timeout errors, caused by the unavailability of the control protocol, all polling-dependent communication operations (monitoring)
 	 * should be performed asynchronously. This executor service executes such operations.
 	 */
 	private ExecutorService executorService;
-	private ExecutorService executorService2;
+	private ExecutorService newExecutorService;
 
 	/**
 	 * Local caching to store failed requests after a period of time
@@ -159,7 +134,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	/**
 	 * store delayTimeInterVal adapter properties
 	 */
-	private String delayTimeInterVal;
+	private String coolDownDelay;
 
 	/**
 	 * store configManagement adapter properties
@@ -181,6 +156,42 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private final Condition condition = reentrantLock.newCondition();
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Override the send() method to add a cool down delay time after every send command
+	 */
+	@Override
+	public byte[] send(byte[] data) throws Exception {
+		try {
+			long currentTime = System.currentTimeMillis() - lastCommandTimestamp;
+			//check next command wait commandsCoolDownDelay time
+			if (currentTime < commandsCoolDownDelay) {
+				Thread.sleep(commandsCoolDownDelay - currentTime);
+			}
+			lastCommandTimestamp = System.currentTimeMillis();
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("Issuing command %s, timestamp: %s", data, lastCommandTimestamp));
+			}
+			return super.send(data);
+		} finally {
+			logger.debug("send data command successfully");
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void internalInit() throws Exception {
+		executorService = Executors.newFixedThreadPool(1);
+		newExecutorService = Executors.newFixedThreadPool(1);
+		super.internalInit();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void internalDestroy() {
 		if (localExtendedStatistics != null && localExtendedStatistics.getStatistics() != null && localExtendedStatistics.getControllableProperties() != null) {
@@ -199,7 +210,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		localCachingLifeTimeOfMap.clear();
 		try {
 			executorService.shutdownNow();
-			executorService2.shutdownNow();
+			newExecutorService.shutdownNow();
 		} catch (Exception e) {
 			logger.warn("Unable to end the TCP connection.", e);
 		} finally {
@@ -318,21 +329,21 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	}
 
 	/**
-	 * Retrieves {@link #delayTimeInterVal}
+	 * Retrieves {@link #coolDownDelay}
 	 *
-	 * @return value of {@link #delayTimeInterVal}
+	 * @return value of {@link #coolDownDelay}
 	 */
-	public String getDelayTimeInterVal() {
-		return delayTimeInterVal;
+	public String getCoolDownDelay() {
+		return coolDownDelay;
 	}
 
 	/**
-	 * Sets {@link #delayTimeInterVal} value
+	 * Sets {@link #coolDownDelay} value
 	 *
-	 * @param delayTimeInterVal new value of {@link #delayTimeInterVal}
+	 * @param coolDownDelay new value of {@link #coolDownDelay}
 	 */
-	public void setDelayTimeInterVal(String delayTimeInterVal) {
-		this.delayTimeInterVal = delayTimeInterVal;
+	public void setCoolDownDelay(String coolDownDelay) {
+		this.coolDownDelay = coolDownDelay;
 	}
 
 	/**
@@ -382,10 +393,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	public void controlProperty(ControllableProperty controllableProperty) throws Exception {
 		reentrantLock.lock();
 		try {
-			condition.signal();
 			if (localExtendedStatistics == null) {
 				return;
 			}
+			condition.signal();
 			isEmergencyDelivery = true;
 			Map<String, String> stats = this.localExtendedStatistics.getStatistics();
 			List<AdvancedControllableProperty> advancedControllableProperties = this.localExtendedStatistics.getControllableProperties();
@@ -417,7 +428,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						updateCacheByValues(localCacheMapOfPropertyNameAndValue, LgLCDConstants.VOLUME, volumeValue);
 						if (LgLCDConstants.ZERO != (int) Float.parseFloat(value)) {
 							updateValueForTheControllableProperty(group + LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.ZERO), stats, advancedControllableProperties);
-							updateCacheByValues(localCacheMapOfPropertyNameAndValue, LgLCDConstants.MUTE,  String.valueOf(LgLCDConstants.ZERO));
+							updateCacheByValues(localCacheMapOfPropertyNameAndValue, LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.ZERO));
 						}
 						break;
 					case MUTE:
@@ -799,11 +810,68 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						logger.debug(String.format("Property name %s doesn't support", propertyKey));
 				}
 			}
-
 			updateValueForTheControllableProperty(property, value, stats, advancedControllableProperties);
 		} finally {
 			reentrantLock.unlock();
 		}
+	}
+
+	/**
+	 * This method is recalled by Symphony to get the list of statistics to be displayed
+	 *
+	 * @return List<Statistics> This return the list of statistics.
+	 */
+	@Override
+	public List<Statistics> getMultipleStatistics() throws Exception {
+
+		ExtendedStatistics extendedStatistics = new ExtendedStatistics();
+		List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
+		Map<String, String> statistics = new HashMap<>();
+		Map<String, String> controlStatistics = new HashMap<>();
+		Map<String, String> dynamicStatistics = new HashMap<>();
+		reentrantLock.lock();
+		try {
+			if (localExtendedStatistics == null) {
+				localExtendedStatistics = new ExtendedStatistics();
+			}
+			if (!isEmergencyDelivery) {
+				convertCacheLifetime();
+				convertDelayTime();
+				convertConfigTimeout();
+				convertPollingInterval();
+				failedMonitor.clear();
+				convertConfigManagement();
+				//Use thread to fetching the monitoring and controlling data if connected with the device successfully
+				populateMonitoringAndControllingData();
+				//destroy channel after collecting all device's information
+				destroyChannel();
+				if (getMultipleTime < pollingIntervalCurrentValue) {
+					return Collections.singletonList(localExtendedStatistics);
+				}
+				if (failedMonitor.size() == countMonitorAndControlMetric) {
+					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
+				} else {
+					populateMonitoringData(statistics, dynamicStatistics);
+					if (isConfigManagement) {
+						populateControllingData(controlStatistics, advancedControllableProperties);
+						extendedStatistics.setControllableProperties(advancedControllableProperties);
+						statistics.putAll(controlStatistics);
+					} else {
+						statistics.remove(LgLCDConstants.INPUT + LgLCDConstants.HASH + LgLCDConstants.SIGNAL);
+					}
+					//If failed for all monitoring data
+					checkFailCommandInCacheMap(statistics, advancedControllableProperties);
+					extendedStatistics.setDynamicStatistics(dynamicStatistics);
+				}
+				extendedStatistics.setStatistics(statistics);
+				extendedStatistics.setControllableProperties(advancedControllableProperties);
+				localExtendedStatistics = extendedStatistics;
+			}
+			isEmergencyDelivery = false;
+		} finally {
+			reentrantLock.unlock();
+		}
+		return Collections.singletonList(localExtendedStatistics);
 	}
 
 	/**
@@ -849,65 +917,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	}
 
 	/**
-	 * This method is recalled by Symphony to get the list of statistics to be displayed
-	 *
-	 * @return List<Statistics> This return the list of statistics.
-	 */
-	@Override
-	public List<Statistics> getMultipleStatistics() throws Exception {
-
-		ExtendedStatistics extendedStatistics = new ExtendedStatistics();
-		List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
-		Map<String, String> statistics = new HashMap<>();
-		Map<String, String> controlStatistics = new HashMap<>();
-		Map<String, String> dynamicStatistics = new HashMap<>();
-		reentrantLock.lock();
-		try {
-			if (localExtendedStatistics == null) {
-				localExtendedStatistics = new ExtendedStatistics();
-			}
-			if (!isEmergencyDelivery) {
-				convertCacheLifetime();
-				convertDelayTime();
-				convertConfigTimeout();
-				convertPollingInterval();
-				failedMonitor.clear();
-				isValidConfigManagement();
-				//Use thread to fetching the monitoring and controlling data if connected with the device successfully
-				populateMonitoringAndControllingData();
-				//destroy channel after collecting all device's information
-				destroyChannel();
-				if (getMultipleTime < pollingIntervalCurrentValue) {
-					return Collections.singletonList(localExtendedStatistics);
-				}
-				if (failedMonitor.size() == countMonitorAndControlMetric) {
-					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
-				} else {
-					populateMonitoringData(statistics, dynamicStatistics);
-					if (isConfigManagement) {
-						populateControllingData(controlStatistics, advancedControllableProperties);
-						extendedStatistics.setControllableProperties(advancedControllableProperties);
-						statistics.putAll(controlStatistics);
-					} else {
-						statistics.remove(LgLCDConstants.INPUT + LgLCDConstants.HASH + LgLCDConstants.SIGNAL);
-					}
-					//If failed for all monitoring data
-					checkFailCommandInCacheMap(statistics, advancedControllableProperties);
-					extendedStatistics.setDynamicStatistics(dynamicStatistics);
-				}
-				extendedStatistics.setStatistics(statistics);
-				extendedStatistics.setControllableProperties(advancedControllableProperties);
-				localExtendedStatistics = extendedStatistics;
-			}
-			isEmergencyDelivery = false;
-		} finally {
-			reentrantLock.unlock();
-		}
-		return Collections.singletonList(localExtendedStatistics);
-	}
-
-
-	/**
 	 * populate monitoring and controlling data
 	 * using 2 thread to get monitoring and controlling data
 	 * Thread 1 fetches device monitoring and controlling data of each property's
@@ -916,8 +925,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * if the response time is greater than the default timeout => Close connection and update failedMonitor
 	 */
 	private void populateMonitoringAndControllingData() throws InterruptedException {
-		List<LgControllingCommand> commands = Arrays.stream(LgControllingCommand.values()).filter(item -> item.isMonitorType() || item.isControlType()).collect(Collectors.toList());
 		int range = 0;
+		List<LgControllingCommand> commands = Arrays.stream(LgControllingCommand.values()).filter(item -> item.isMonitorType() || item.isControlType()).collect(Collectors.toList());
 		Future manageTimeOutWorkerThread;
 		countMonitorAndControlMetric = 0;
 		if (getMultipleTime == pollingIntervalCurrentValue) {
@@ -930,7 +939,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 		for (int i = intervalIndex; i < range; i++) {
 			LgControllingCommand controllingCommand = commands.get(i);
-			if ((!isConfigManagement && controllingCommand.isControlType())) {
+			if (!isConfigManagement && controllingCommand.isControlType()) {
 				continue;
 			}
 			if ((controllingCommand.isControlType() || controllingCommand.isMonitorType())) {
@@ -938,19 +947,24 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				if (param == null) {
 					continue;
 				}
+				//Count the number of requests in one polling cycle.
 				countMonitorAndControlMetric++;
+
+				//Submit thread to fetch data
 				devicesExecutionPool.add(executorService.submit(() -> {
 					retrieveDataByCommandName(controllingCommand.getCommandNames(), param, controllingCommand);
 				}));
-				int finalIndex = i;
+				int finalIndexFuture = i;
 
 				// The thread responsible for checking the ExecutorService waits until the defaultConfigTimeout period has elapsed.
 				// If the Future is not completed at that point, the thread will cancel it
-				manageTimeOutWorkerThread = executorService2.submit(() -> {
+				manageTimeOutWorkerThread = newExecutorService.submit(() -> {
 					int timeoutCount = 1;
-					while (!devicesExecutionPool.get(finalIndex).isDone() && timeoutCount <= defaultConfigTimeout) {
+					while (!devicesExecutionPool.get(finalIndexFuture).isDone() && timeoutCount <= defaultConfigTimeout) {
 						try {
 							Thread.sleep(100);
+
+							// The thread waits until the controlProperty() method successfully controls.
 							if (isEmergencyDelivery) {
 								condition.wait();
 							}
@@ -959,12 +973,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						}
 						timeoutCount++;
 					}
-
 					//If the Future is not completed after the defaultConfigTimeout =>  update the failedMonitor and destroy the connection.
-					if (!devicesExecutionPool.get(finalIndex).isDone()) {
+					if (!devicesExecutionPool.get(finalIndexFuture).isDone()) {
 						failedMonitor.add(controllingCommand.getName());
 						destroyChannel();
-						devicesExecutionPool.get(finalIndex).cancel(true);
+						devicesExecutionPool.get(finalIndexFuture).cancel(true);
 					}
 				});
 				try {
@@ -1023,7 +1036,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				if (cachingCurrentValue.isPresent()) {
 					int currentCachingLifetime = cachingCurrentValue.get().getValue();
 					LgControllingCommand controllingCommand = LgControllingCommand.getCommandByName(value);
-					if (currentCachingLifetime >= cachingCurrentLifetime) {
+					if (currentCachingLifetime >= this.currentCachingLifetime) {
 						switch (controllingCommand) {
 							case NETWORK_SETTING:
 								localCacheMapOfPropertyNameAndValue.remove(LgLCDConstants.IP_ADDRESS);
@@ -1045,6 +1058,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 								statistics.put(groupName + LgLCDConstants.TILE_MODE_COLUMN, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.TILE_MODE_ROW, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.TILE_MODE, LgLCDConstants.NA);
+								statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+								statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+								break;
+							case NATURAL_MODE:
+								groupName = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH;
+								updateCacheByValues(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+								updateCacheByValues(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
 								break;
@@ -1345,7 +1365,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * @param dynamicStatistics the dynamicStatistics are list of dynamicStatistics
 	 */
 	private void populateMonitoringData(Map<String, String> statistics, Map<String, String> dynamicStatistics) {
-
 		//The flow code is handled in the previous version
 		String inputGroupName = LgLCDConstants.INPUT + LgLCDConstants.HASH;
 		String signal = getValueByName(LgLCDConstants.SIGNAL);
@@ -2148,7 +2167,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	/**
 	 * This method is used to validate input config management from user
 	 */
-	private void isValidConfigManagement() {
+	private void convertConfigManagement() {
 		isConfigManagement = StringUtils.isNotNullOrEmpty(this.configManagement) && this.configManagement.equalsIgnoreCase(LgLCDConstants.IS_VALID_CONFIG_MANAGEMENT);
 	}
 
@@ -2157,12 +2176,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private void convertCacheLifetime() {
 		try {
-			cachingCurrentLifetime = Integer.parseInt(this.cachingLifetime);
-			if (cachingCurrentLifetime <= LgLCDConstants.ZERO) {
-				cachingCurrentLifetime = LgLCDConstants.NUMBER_ONE;
+			currentCachingLifetime = Integer.parseInt(this.cachingLifetime);
+			if (currentCachingLifetime <= LgLCDConstants.ZERO) {
+				currentCachingLifetime = LgLCDConstants.NUMBER_ONE;
 			}
 		} catch (Exception e) {
-			cachingCurrentLifetime = LgLCDConstants.DEFAULT_CACHING_LIFETIME;
+			currentCachingLifetime = LgLCDConstants.DEFAULT_CACHING_LIFETIME;
 		}
 	}
 
@@ -2171,7 +2190,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 */
 	private void convertDelayTime() {
 		try {
-			commandsCoolDownDelay = Integer.parseInt(this.delayTimeInterVal);
+			commandsCoolDownDelay = Integer.parseInt(this.coolDownDelay);
 			if (LgLCDConstants.MIN_DELAY_TIME > commandsCoolDownDelay) {
 				commandsCoolDownDelay = LgLCDConstants.MIN_DELAY_TIME;
 			}
