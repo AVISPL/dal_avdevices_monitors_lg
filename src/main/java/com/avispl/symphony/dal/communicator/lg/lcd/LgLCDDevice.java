@@ -243,6 +243,52 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * <p>
+	 *
+	 * Check for available devices before retrieving the value
+	 * ping latency information to Symphony
+	 */
+	@Override
+	public int ping() throws Exception {
+		if (isInitialized()) {
+			long pingResultTotal = 0L;
+
+			for (int i = 0; i < this.getPingAttempts(); i++) {
+				long startTime = System.currentTimeMillis();
+
+				try (Socket puSocketConnection = new Socket(this.host, this.getPort())) {
+					puSocketConnection.setSoTimeout(this.getPingTimeout());
+					if (puSocketConnection.isConnected()) {
+						long pingResult = System.currentTimeMillis() - startTime;
+						pingResultTotal += pingResult;
+						if (this.logger.isTraceEnabled()) {
+							this.logger.trace(String.format("PING OK: Attempt #%s to connect to %s on port %s succeeded in %s ms", i + 1, host, this.getPort(), pingResult));
+						}
+					} else {
+						if (this.logger.isDebugEnabled()) {
+							this.logger.debug(String.format("PING DISCONNECTED: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
+						}
+						return this.getPingTimeout();
+					}
+				} catch (SocketTimeoutException | ConnectException tex) {
+					if (this.logger.isDebugEnabled()) {
+						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
+					}
+					throw new SocketTimeoutException("Connection timed out");
+				} catch (Exception e) {
+					if (this.logger.isDebugEnabled()) {
+						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed, UNKNOWN ERROR %s: ", host, e.getMessage()));
+					}
+					return this.getPingTimeout();
+				}
+			}
+			return Math.max(1, Math.toIntExact(pingResultTotal / this.getPingAttempts()));
+		} else {
+			throw new IllegalStateException("Cannot use device class without calling init() first");
+		}
+	}
+	/**
 	 * Retrieves {@link #configTimeout}
 	 *
 	 * @return value of {@link #configTimeout}
@@ -1018,54 +1064,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		logger.debug("Get data success with getMultipleTime: " + currentGetMultipleInPollingInterval);
 		currentGetMultipleInPollingInterval++;
 		localCahceFailedMonitor = localCahceFailedMonitor + failedMonitor.size();
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 *
-	 * Check for available devices before retrieving the value
-	 * ping latency information to Symphony
-	 */
-	@Override
-	public int ping() throws Exception {
-		if (isInitialized()) {
-			long pingResultTotal = 0L;
-
-			for (int i = 0; i < this.getPingAttempts(); i++) {
-				long startTime = System.currentTimeMillis();
-
-				try (Socket puSocketConnection = new Socket(this.host, this.getPort())) {
-					puSocketConnection.setSoTimeout(this.getPingTimeout());
-					if (puSocketConnection.isConnected()) {
-						long pingResult = System.currentTimeMillis() - startTime;
-						pingResultTotal += pingResult;
-						if (this.logger.isTraceEnabled()) {
-							this.logger.trace(String.format("PING OK: Attempt #%s to connect to %s on port %s succeeded in %s ms", i + 1, host, this.getPort(), pingResult));
-						}
-					} else {
-						if (this.logger.isDebugEnabled()) {
-							this.logger.debug(String.format("PING DISCONNECTED: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
-						}
-						return this.getPingTimeout();
-					}
-				} catch (SocketTimeoutException | ConnectException tex) {
-					if (this.logger.isDebugEnabled()) {
-						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
-					}
-					throw new SocketTimeoutException("Connection timed out");
-				} catch (Exception e) {
-					if (this.logger.isDebugEnabled()) {
-						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed, UNKNOWN ERROR %s: ", host, e.getMessage()));
-					}
-					return this.getPingTimeout();
-				}
-			}
-			return Math.max(1, Math.toIntExact(pingResultTotal / this.getPingAttempts()));
-		} else {
-			throw new IllegalStateException("Cannot use device class without calling init() first");
-		}
 	}
 
 	/**
