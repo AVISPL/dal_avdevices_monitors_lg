@@ -254,4 +254,6 @@ public class LgLCDConstants {
 	public static int DEFAULT_CONFIG_TIMEOUT = 2000;
 	public static int MAX_CONFIG_TIMEOUT = 3000;
 	public static int DEFAULT_POLLING_INTERVAL = 2;
+	public static int ORDINAL_TO_INDEX_CONVERT_FACTOR = 1;
+
 }

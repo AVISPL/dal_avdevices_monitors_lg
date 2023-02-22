@@ -89,7 +89,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private boolean isEmergencyDelivery;
 	private final Set<String> historicalProperties = new HashSet<>();
 	private final Set<String> failedMonitor = new HashSet<>();
-	private int localCahceFailedMonitor = 0;
+	private int localCachedFailedMonitor = 0;
 	private Map<String, String> cacheMapOfPriorityInputAndValue = new HashMap<>();
 	private ExtendedStatistics localExtendedStatistics;
 
@@ -288,6 +288,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			throw new IllegalStateException("Cannot use device class without calling init() first");
 		}
 	}
+
 	/**
 	 * Retrieves {@link #configTimeout}
 	 *
@@ -913,7 +914,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					isFirstInit = true;
 					return Collections.singletonList(localExtendedStatistics);
 				}
-				if ((localCahceFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) || localCacheMapOfPropertyNameAndValue.isEmpty()) {
+				if ((localCachedFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) || localCacheMapOfPropertyNameAndValue.isEmpty()) {
 					localCacheMapOfPropertyNameAndValue.clear();
 					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
 				} else {
@@ -1002,7 +1003,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		if (currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
 			devicesExecutionPool.clear();
 			currentGetMultipleInPollingInterval = 0;
-			localCahceFailedMonitor = 0;
+			localCachedFailedMonitor = 0;
 			range = 0;
 			currentCommandIndex = 0;
 		}
@@ -1030,7 +1031,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				// If the Future is not completed at that point, the thread will cancel it
 				manageTimeOutWorkerThread = timeoutManagementExSer.submit(() -> {
 					int timeoutCount = 1;
-					while (!devicesExecutionPool.get(devicesExecutionPool.size() - 1).isDone() && timeoutCount <= defaultConfigTimeout) {
+					while (!devicesExecutionPool.get(devicesExecutionPool.size() - LgLCDConstants.ORDINAL_TO_INDEX_CONVERT_FACTOR).isDone() && timeoutCount <= defaultConfigTimeout) {
 						try {
 							Thread.sleep(100);
 
@@ -1044,11 +1045,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						timeoutCount++;
 					}
 					//If the Future is not completed after the defaultConfigTimeout =>  update the failedMonitor and destroy the connection.
-					int len = devicesExecutionPool.size() - 1;
-					if (!devicesExecutionPool.get(len).isDone()) {
+					int lastIndex = devicesExecutionPool.size() - 1;
+					if (!devicesExecutionPool.get(lastIndex).isDone()) {
 						failedMonitor.add(controllingCommand.getName());
 						destroyChannel();
-						devicesExecutionPool.get(len).cancel(true);
+						devicesExecutionPool.get(lastIndex).cancel(true);
 					}
 				});
 				try {
@@ -1063,7 +1064,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 		logger.debug("Get data success with getMultipleTime: " + currentGetMultipleInPollingInterval);
 		currentGetMultipleInPollingInterval++;
-		localCahceFailedMonitor = localCahceFailedMonitor + failedMonitor.size();
+		localCachedFailedMonitor = localCachedFailedMonitor + failedMonitor.size();
 	}
 
 	/**
