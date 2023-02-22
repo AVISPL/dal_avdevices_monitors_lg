@@ -3,6 +3,9 @@
  */
 package com.avispl.symphony.dal.communicator.lg.lcd;
 
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,8 +89,14 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private boolean isEmergencyDelivery;
 	private final Set<String> historicalProperties = new HashSet<>();
 	private final Set<String> failedMonitor = new HashSet<>();
+	private int localCachedFailedMonitor = 0;
 	private Map<String, String> cacheMapOfPriorityInputAndValue = new HashMap<>();
 	private ExtendedStatistics localExtendedStatistics;
+
+	/**
+	 * a variable to check the adapter init
+	 */
+	private boolean isFirstInit;
 
 	/**
 	 * To avoid timeout errors, caused by the unavailability of the control protocol, all polling-dependent communication operations (monitoring)
@@ -186,6 +195,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	protected void internalInit() throws Exception {
 		fetchingDataExSer = Executors.newFixedThreadPool(1);
 		timeoutManagementExSer = Executors.newFixedThreadPool(1);
+		isFirstInit = false;
 		super.internalInit();
 	}
 
@@ -230,6 +240,53 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		this.setCommandSuccessList(Collections.singletonList("OK"));
 		// set list of error response strings (included at the end of response when command fails, typically ending with command prompt)
 		this.setCommandErrorList(Collections.singletonList("NG"));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 *
+	 * Check for available devices before retrieving the value
+	 * ping latency information to Symphony
+	 */
+	@Override
+	public int ping() throws Exception {
+		if (isInitialized()) {
+			long pingResultTotal = 0L;
+
+			for (int i = 0; i < this.getPingAttempts(); i++) {
+				long startTime = System.currentTimeMillis();
+
+				try (Socket puSocketConnection = new Socket(this.host, this.getPort())) {
+					puSocketConnection.setSoTimeout(this.getPingTimeout());
+					if (puSocketConnection.isConnected()) {
+						long pingResult = System.currentTimeMillis() - startTime;
+						pingResultTotal += pingResult;
+						if (this.logger.isTraceEnabled()) {
+							this.logger.trace(String.format("PING OK: Attempt #%s to connect to %s on port %s succeeded in %s ms", i + 1, host, this.getPort(), pingResult));
+						}
+					} else {
+						if (this.logger.isDebugEnabled()) {
+							this.logger.debug(String.format("PING DISCONNECTED: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
+						}
+						return this.getPingTimeout();
+					}
+				} catch (SocketTimeoutException | ConnectException tex) {
+					if (this.logger.isDebugEnabled()) {
+						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed within the timeout period of %sms", host, this.getPingTimeout()));
+					}
+					throw new SocketTimeoutException("Connection timed out");
+				} catch (Exception e) {
+					if (this.logger.isDebugEnabled()) {
+						this.logger.error(String.format("PING TIMEOUT: Connection to %s did not succeed, UNKNOWN ERROR %s: ", host, e.getMessage()));
+					}
+					return this.getPingTimeout();
+				}
+			}
+			return Math.max(1, Math.toIntExact(pingResultTotal / this.getPingAttempts()));
+		} else {
+			throw new IllegalStateException("Cannot use device class without calling init() first");
+		}
 	}
 
 	/**
@@ -549,6 +606,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 									LgLCDConstants.MANUAL);
 							checkControlPropertyBeforeAddNewProperty(controlInputPriority, advancedControllableProperties);
 							for (Entry<String, String> entry : cacheMapOfPriorityInputAndValue.entrySet()) {
+								if (LgLCDConstants.PLAY_VIA_URL.equalsIgnoreCase(entry.getValue())) {
+									continue;
+								}
 								stats.put(group + entry.getKey(), entry.getValue());
 							}
 							stats.put(group + LgLCDConstants.PRIORITY_UP, LgLCDConstants.EMPTY_STRING);
@@ -557,11 +617,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 							stats.put(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
 							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
 
-							String[] inputSelected = cacheMapOfPriorityInputAndValue.values().toArray(new String[0]);
+							String[] inputSelected = cacheMapOfPriorityInputAndValue.values().stream().filter(item -> !item.equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL)).collect(Collectors.toList())
+									.toArray(new String[0]);
 
 							String inputSourceDefaultValue = getValueByName(LgLCDConstants.PRIORITY_INPUT);
 							if (!LgLCDConstants.NA.equals(inputSourceDefaultValue)) {
-								Optional<Entry<String, String>> priorityInputOption = cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst();
+								Optional<Entry<String, String>> priorityInputOption = cacheMapOfPriorityInputAndValue.entrySet().stream().filter(item -> !item.getValue().equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL))
+										.findFirst();
 								if (priorityInputOption.isPresent()) {
 									inputSourceDefaultValue = priorityInputOption.get().getValue();
 								}
@@ -657,6 +719,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						}
 						sendRequestToControlValue(commandNames.FAILOVER_INPUT_LIST, stringBuilder.substring(0, stringBuilder.length() - 1).getBytes(StandardCharsets.UTF_8), false, value);
 						for (Entry<String, String> entry : cacheMapOfPriorityInputAndValue.entrySet()) {
+							if (LgLCDConstants.PLAY_VIA_URL.equalsIgnoreCase(entry.getValue())) {
+								continue;
+							}
 							stats.remove(group + entry.getKey());
 							stats.put(group + entry.getKey(), entry.getValue());
 						}
@@ -845,10 +910,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				populateMonitoringAndControllingData();
 				//destroy channel after collecting all device's information
 				destroyChannel();
-				if (currentGetMultipleInPollingInterval < pollingIntervalInIntValue) {
+				if (!isFirstInit) {
+					isFirstInit = true;
 					return Collections.singletonList(localExtendedStatistics);
 				}
-				if (failedMonitor.size() == currentCommandIndex) {
+				if ((localCachedFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) || localCacheMapOfPropertyNameAndValue.isEmpty()) {
+					localCacheMapOfPropertyNameAndValue.clear();
 					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
 				} else {
 					populateMonitoringData(statistics, dynamicStatistics);
@@ -894,20 +961,22 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		String priorityInputStart = cacheMapOfPriorityInputAndValue.get(LgLCDConstants.PRIORITY + LgLCDConstants.NUMBER_ONE);
 		String priorityInputEnd = cacheMapOfPriorityInputAndValue.get(LgLCDConstants.PRIORITY + cacheMapOfPriorityInputAndValue.size());
 		if (StringUtils.isNullOrEmpty(priorityInputEnd)) {
-			priorityInputEnd = cacheMapOfPriorityInputAndValue.get(LgLCDConstants.PRIORITY + (cacheMapOfPriorityInputAndValue.size() - 1));
+			if (cacheMapOfPriorityInputAndValue.entrySet().stream().map(item -> item.getValue().equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL)).findFirst().isPresent()) {
+				priorityInputEnd = cacheMapOfPriorityInputAndValue.get(LgLCDConstants.PRIORITY + (cacheMapOfPriorityInputAndValue.size() - 1));
+			}
 		}
 		if (LgLCDConstants.NA.equals(currentPriority) || cacheMapOfPriorityInputAndValue.isEmpty()) {
 			stats.put(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.NA);
 			stats.put(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.NA);
 			return;
 		}
-		if (!priorityInputStart.equals(currentPriority) && !priorityInputEnd.equals(currentPriority)) {
+		if (!currentPriority.equals(priorityInputStart) && !currentPriority.equals(priorityInputEnd)) {
 			stats.put(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.EMPTY_STRING);
 			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.UPPING, 0));
 
 			stats.put(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
 			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
-		} else if (!priorityInputEnd.equals(currentPriority)) {
+		} else if (!StringUtils.isNullOrEmpty(priorityInputEnd) && !currentPriority.equals(priorityInputEnd)) {
 			stats.put(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
 			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
 		} else {
@@ -925,13 +994,18 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	 * if the response time is greater than the default timeout => Close connection and update failedMonitor
 	 */
 	private void populateMonitoringAndControllingData() throws InterruptedException {
-		int range = 0;
 		List<LgControllingCommand> commands = Arrays.stream(LgControllingCommand.values()).filter(item -> item.isMonitorType() || item.isControlType()).collect(Collectors.toList());
 		Future manageTimeOutWorkerThread;
-		currentCommandIndex = 0;
-		if (currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
-			currentGetMultipleInPollingInterval = 0;
+		int range = 0;
+		if (currentGetMultipleInPollingInterval == pollingIntervalInIntValue - 1) {
 			range = commands.size();
+		}
+		if (currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
+			devicesExecutionPool.clear();
+			currentGetMultipleInPollingInterval = 0;
+			localCachedFailedMonitor = 0;
+			range = 0;
+			currentCommandIndex = 0;
 		}
 		int intervalIndex = currentGetMultipleInPollingInterval * commands.size() / pollingIntervalInIntValue;
 		if (range == 0) {
@@ -949,18 +1023,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				}
 				//Count the number of requests in one polling cycle.
 				currentCommandIndex++;
-
 				//Submit thread to fetch data
 				devicesExecutionPool.add(fetchingDataExSer.submit(() -> {
 					retrieveDataByCommandName(controllingCommand.getCommandNames(), param, controllingCommand);
 				}));
-				int finalIndexFuture = i;
-
 				// The thread responsible for checking the ExecutorService waits until the defaultConfigTimeout period has elapsed.
 				// If the Future is not completed at that point, the thread will cancel it
 				manageTimeOutWorkerThread = timeoutManagementExSer.submit(() -> {
 					int timeoutCount = 1;
-					while (!devicesExecutionPool.get(finalIndexFuture).isDone() && timeoutCount <= defaultConfigTimeout) {
+					while (!devicesExecutionPool.get(devicesExecutionPool.size() - LgLCDConstants.ORDINAL_TO_INDEX_CONVERT_FACTOR).isDone() && timeoutCount <= defaultConfigTimeout) {
 						try {
 							Thread.sleep(100);
 
@@ -974,10 +1045,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						timeoutCount++;
 					}
 					//If the Future is not completed after the defaultConfigTimeout =>  update the failedMonitor and destroy the connection.
-					if (!devicesExecutionPool.get(finalIndexFuture).isDone()) {
+					int lastIndex = devicesExecutionPool.size() - 1;
+					if (!devicesExecutionPool.get(lastIndex).isDone()) {
 						failedMonitor.add(controllingCommand.getName());
 						destroyChannel();
-						devicesExecutionPool.get(finalIndexFuture).cancel(true);
+						devicesExecutionPool.get(lastIndex).cancel(true);
 					}
 				});
 				try {
@@ -992,6 +1064,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 		logger.debug("Get data success with getMultipleTime: " + currentGetMultipleInPollingInterval);
 		currentGetMultipleInPollingInterval++;
+		localCachedFailedMonitor = localCachedFailedMonitor + failedMonitor.size();
 	}
 
 	/**
@@ -1490,12 +1563,17 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					LgLCDConstants.MANUAL);
 			checkControlPropertyBeforeAddNewProperty(controlInputPriority, advancedControllableProperties);
 			for (Entry<String, String> entry : cacheMapOfPriorityInputAndValue.entrySet()) {
+				if (LgLCDConstants.PLAY_VIA_URL.equalsIgnoreCase(entry.getValue())) {
+					continue;
+				}
 				controlStatistics.put(groupName + entry.getKey(), entry.getValue());
 			}
-			String[] inputSelected = cacheMapOfPriorityInputAndValue.values().toArray(new String[0]);
+			String[] inputSelected = cacheMapOfPriorityInputAndValue.values().stream().filter(item -> !item.equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL)).collect(Collectors.toList())
+					.toArray(new String[0]);
 			String priorityInput = getValueByName(LgLCDConstants.PRIORITY_INPUT);
 			if (LgLCDConstants.NA.equals(priorityInput)) {
-				Optional<Entry<String, String>> priorityInputOption = cacheMapOfPriorityInputAndValue.entrySet().stream().findFirst();
+				Optional<Entry<String, String>> priorityInputOption = cacheMapOfPriorityInputAndValue.entrySet().stream().filter(item -> !item.getValue().equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL))
+						.findFirst();
 				if (priorityInputOption.isPresent()) {
 					priorityInput = priorityInputOption.get().getValue();
 				}
@@ -1603,6 +1681,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.ON)));
 
 			digestResponse(response, LgLCDConstants.commandNames.POWER);
+			updateCachedDeviceData(cacheMapOfPriorityInputAndValue, LgLCDConstants.POWER, LgLCDConstants.ON);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power OFF send", e);
@@ -1619,6 +1698,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					LgLCDUtils.buildSendString((byte) monitorID, LgLCDConstants.commands.get(LgLCDConstants.commandNames.POWER), LgLCDConstants.powerStatus.get(LgLCDConstants.powerStatusNames.OFF)));
 
 			digestResponse(response, LgLCDConstants.commandNames.POWER);
+			updateCachedDeviceData(cacheMapOfPriorityInputAndValue, LgLCDConstants.POWER, LgLCDConstants.OFF);
 		} catch (Exception e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("error during power ON send", e);
