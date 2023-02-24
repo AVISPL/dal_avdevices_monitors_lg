@@ -38,6 +38,8 @@ public enum InputSourceDropdown {
 	SUPERSIGN_PLAYER("SUPERSIGN", "e0", false),
 	OTHERS("OTHERS", "e1", false),
 	MULTI_SCREEN("MULTI_SCREEN", "e2", false),
+	PLAY_VIA_URL_PC("PLAY_VIA_URL", "e3", false),
+	PLAY_VIA_URL_DTV("PLAY_VIA_URL", "e3", true),
 	NONE("None", "None", false);
 
 	private final String name;
