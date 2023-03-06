@@ -940,14 +940,6 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		} finally {
 			reentrantLock.unlock();
 		}
-		System.out.println("Natural size value: " + localExtendedStatistics.getStatistics().get(LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_SIZE));
-		System.out.println("Natural mode value: " + localExtendedStatistics.getStatistics().get(LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_MODE));
-		int index = 0;
-		for (AdvancedControllableProperty advancedControllableProperty : localExtendedStatistics.getControllableProperties()) {
-			System.out.println(String.format("propertyName %s ", index) + advancedControllableProperty.getName());
-			index++;
-		}
-		System.out.println("list advancedControllableProperty: " + localExtendedStatistics.getControllableProperties());
 		return Collections.singletonList(localExtendedStatistics);
 	}
 
