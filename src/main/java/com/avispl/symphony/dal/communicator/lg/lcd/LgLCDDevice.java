@@ -940,6 +940,14 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		} finally {
 			reentrantLock.unlock();
 		}
+		System.out.println("Natural size value: " + localExtendedStatistics.getStatistics().get(LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_SIZE));
+		System.out.println("Natural mode value: " + localExtendedStatistics.getStatistics().get(LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH + LgLCDConstants.NATURAL_MODE));
+		int index = 0;
+		for (AdvancedControllableProperty advancedControllableProperty : localExtendedStatistics.getControllableProperties()) {
+			System.out.println(String.format("propertyName %s ", index) + advancedControllableProperty.getName());
+			index++;
+		}
+		System.out.println("list advancedControllableProperty: " + localExtendedStatistics.getControllableProperties());
 		return Collections.singletonList(localExtendedStatistics);
 	}
 
@@ -1112,6 +1120,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					int currentCachingLifetime = cachingCurrentValue.get().getValue();
 					LgControllingCommand controllingCommand = LgControllingCommand.getCommandByName(value);
 					if (currentCachingLifetime >= this.currentCachingLifetime) {
+						localCachingLifeTimeOfMap.put(value.toLowerCase(Locale.ROOT), 0);
 						switch (controllingCommand) {
 							case NETWORK_SETTING:
 								localCacheMapOfPropertyNameAndValue.remove(LgLCDConstants.IP_ADDRESS);
@@ -1123,31 +1132,43 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 								statistics.put(LgLCDConstants.DNS_SERVER, LgLCDConstants.NA);
 								statistics.put(LgLCDConstants.IP_ADDRESS, LgLCDConstants.NA);
 								break;
-							case TILE_MODE:
+							case TILE_MODE_SETTINGS:
 								String groupName = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH;
+								if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.TILE_MODE))) {
+									statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+									updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+									advancedControllableProperties.removeIf(item -> item.getName().equals(groupName + LgLCDConstants.NATURAL_MODE));
+									if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.NATURAL_MODE))) {
+										statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+										updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+									}
+									statistics.put(groupName + LgLCDConstants.TILE_MODE_ID, LgLCDConstants.NA);
+								}
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TILE_MODE_COLUMN, LgLCDConstants.NA);
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TILE_MODE_ROW, LgLCDConstants.NA);
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TILE_MODE, LgLCDConstants.NA);
-								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
-								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TILE_MODE_ID, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.TILE_MODE_COLUMN, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.TILE_MODE_ROW, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.TILE_MODE, LgLCDConstants.NA);
-								statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
-								statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+								advancedControllableProperties.removeIf(item -> item.getName().equals(groupName + LgLCDConstants.TILE_MODE));
 								break;
 							case NATURAL_MODE:
 								groupName = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH;
-								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+								if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.NATURAL_MODE))) {
+									statistics.remove(groupName + LgLCDConstants.NATURAL_SIZE);
+									updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
+								}
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
-								statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 								statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+								advancedControllableProperties.removeIf(item -> item.getName().equals(groupName + LgLCDConstants.NATURAL_MODE));
 								break;
 							case DATE:
 							case TIME:
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.DATE, LgLCDConstants.NA);
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TIME, LgLCDConstants.NA);
 								statistics.put(LgLCDConstants.DATE_TIME, LgLCDConstants.NA);
+								localCacheMapOfPropertyNameAndValue.remove(value);
 								break;
 							default:
 								Entry<String, String> property = statistics.entrySet().stream().filter((item) -> {
@@ -1718,6 +1739,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private void updateCachedDeviceData(Map<String, String> cacheMapOfPropertyNameAndValue, String property, String value) {
 		cacheMapOfPropertyNameAndValue.remove(property);
 		cacheMapOfPropertyNameAndValue.put(property, value);
+		//Remove the caching lifetime after receiving new data
+		localCachingLifeTimeOfMap.remove(property);
 	}
 
 	/**
@@ -2263,7 +2286,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		try {
 			currentCachingLifetime = Integer.parseInt(this.cachingLifetime);
 			if (currentCachingLifetime <= LgLCDConstants.ZERO) {
-				currentCachingLifetime = LgLCDConstants.NUMBER_ONE;
+				currentCachingLifetime = LgLCDConstants.DEFAULT_CACHING_LIFETIME;
 			}
 		} catch (Exception e) {
 			currentCachingLifetime = LgLCDConstants.DEFAULT_CACHING_LIFETIME;

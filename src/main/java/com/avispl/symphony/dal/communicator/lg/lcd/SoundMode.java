@@ -14,11 +14,11 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
 public enum SoundMode {
 
 	STANDARD("Standard", "01"),
-	MUSIC("Music", "02"),
 	CINEMA("Cinema", "03"),
+	NEWS("News (Clear Voice IV)", "07"),
 	SPORTS("Sports", "04"),
-	GAME("Game", "05"),
-	NEWS("News (Clear Voice IV)", "07");
+	MUSIC("Music", "02"),
+	GAME("Game", "05");
 
 	private final String name;
 	private final String value;

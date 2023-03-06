@@ -15,11 +15,11 @@ public enum PictureMode {
 
 	MALL("Mall/QSR", "00"),
 	GENERAL("General", "01"),
-	GOV("Gov./Corp.", "02"),
 	TRANSPORTATION("Transportation", "03"),
 	EDUCATION("Education", "04"),
+	GOV("Gov./Corp.", "02"),
+	APS("Auto Power save", "08"),
 	EXPERT("Expert1", "05"),
-	APS("APS", "08"),
 	CALIBRATION("Calibration", "11"),
 	HOSPITAL("Hospital", "12");
 
