@@ -18,7 +18,7 @@ public enum PictureMode {
 	TRANSPORTATION("Transportation", "03"),
 	EDUCATION("Education", "04"),
 	GOV("Gov./Corp.", "02"),
-	APS("Auto Power save", "08"),
+	APS("Auto Power Save", "08"),
 	EXPERT("Expert1", "05"),
 	CALIBRATION("Calibration", "11"),
 	HOSPITAL("Hospital", "12");

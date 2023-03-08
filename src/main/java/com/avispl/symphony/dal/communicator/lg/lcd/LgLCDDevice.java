@@ -91,6 +91,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 	private final Set<String> failedMonitor = new HashSet<>();
 	private int localCachedFailedMonitor = 0;
 	private Map<String, String> cacheMapOfPriorityInputAndValue = new HashMap<>();
+	private int countControlUnavailable = 0;
 	private ExtendedStatistics localExtendedStatistics;
 
 	/**
@@ -915,10 +916,15 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					isFirstInit = true;
 					return Collections.singletonList(localExtendedStatistics);
 				}
-				if ((localCachedFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) || localCacheMapOfPropertyNameAndValue.isEmpty()) {
+				if (localCachedFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
 					//Handle the case where all properties receive an error response and the case where 2 connections run in parallel to the device
-					localCacheMapOfPropertyNameAndValue.clear();
+					isFirstInit = false;
 					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
+					countControlUnavailable++;
+					if (countControlUnavailable > currentCachingLifetime) {
+						localCacheMapOfPropertyNameAndValue.clear();
+						localCachingLifeTimeOfMap.clear();
+					}
 				} else {
 					populateMonitoringData(statistics, dynamicStatistics);
 					if (isConfigManagement) {
@@ -931,6 +937,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 					//If failed for all monitoring data
 					checkFailedCommand(statistics, advancedControllableProperties);
 					extendedStatistics.setDynamicStatistics(dynamicStatistics);
+					countControlUnavailable = 0;
 				}
 				extendedStatistics.setStatistics(statistics);
 				extendedStatistics.setControllableProperties(advancedControllableProperties);
@@ -1127,13 +1134,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 							case TILE_MODE_SETTINGS:
 								String groupName = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH;
 								if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.TILE_MODE))) {
-									statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
-									updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
-									advancedControllableProperties.removeIf(item -> item.getName().equals(groupName + LgLCDConstants.NATURAL_MODE));
 									if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.NATURAL_MODE))) {
 										statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 										updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 									}
+									statistics.put(groupName + LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+									updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
+									advancedControllableProperties.removeIf(item -> item.getName().equals(groupName + LgLCDConstants.NATURAL_MODE));
 									statistics.put(groupName + LgLCDConstants.TILE_MODE_ID, LgLCDConstants.NA);
 								}
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TILE_MODE_COLUMN, LgLCDConstants.NA);
@@ -1148,7 +1155,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 							case NATURAL_MODE:
 								groupName = LgLCDConstants.TILE_MODE_SETTINGS + LgLCDConstants.HASH;
 								if (String.valueOf(LgLCDConstants.NUMBER_ONE).equalsIgnoreCase(statistics.get(groupName + LgLCDConstants.NATURAL_MODE))) {
-									statistics.remove(groupName + LgLCDConstants.NATURAL_SIZE);
+									statistics.put(groupName + LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 									updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_SIZE, LgLCDConstants.NA);
 								}
 								updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, LgLCDConstants.NA);
