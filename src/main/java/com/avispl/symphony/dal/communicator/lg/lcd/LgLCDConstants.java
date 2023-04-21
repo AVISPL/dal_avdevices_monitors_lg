@@ -11,7 +11,8 @@ import java.util.Map;
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 30/1/2022
- * @since 1.0.0
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public class LgLCDConstants {
 	enum powerStatusNames {ON, OFF, UNAVAILABLE}

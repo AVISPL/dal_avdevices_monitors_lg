@@ -75,8 +75,8 @@ import com.avispl.symphony.dal.util.StringUtils;
  * <li> Temperature </li>
  *
  * @author Harry, Kevin
- * @version 1.4
- * @since 1.4
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 

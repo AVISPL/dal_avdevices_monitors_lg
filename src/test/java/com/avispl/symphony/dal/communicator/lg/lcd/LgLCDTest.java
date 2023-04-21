@@ -21,9 +21,9 @@ import com.avispl.symphony.dal.communicator.lg.lcd.LgLCDConstants.commandNames;
 /**
  * Unit test for LgLCDDevice
  *
- * @author Harry
- * @version 1.2
- * @since 1.2
+ * @author Harry, kevin
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public class LgLCDTest {
 
