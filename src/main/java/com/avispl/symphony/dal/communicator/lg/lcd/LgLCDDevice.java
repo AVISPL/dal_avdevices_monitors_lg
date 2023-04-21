@@ -1992,6 +1992,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						String powerOnStatus = EnumTypeHandler.getNameEnumByValue(PowerStatus.class, convertByteToValue(reply));
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.POWER_ON_STATUS, powerOnStatus);
 						return powerOnStatus;
+					case REBOOT:
+						reply = Arrays.copyOfRange(response, 7, 9);
+						String rebootValue = convertByteToValue(reply);
+						if (!LgLCDConstants.REBOOT_VALUE.equals(rebootValue)) {
+							throw new ResourceNotReachableException("NG reply");
+						}
+						return rebootValue;
 					default:
 						logger.debug("this command name is not supported" + expectedResponse);
 				}
