@@ -34,7 +34,7 @@ public class LgLCDTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		lgLCDDevice = new LgLCDDevice();
-		lgLCDDevice.setHost("172.31.254.160");
+		lgLCDDevice.setHost("10.34.30.126");
 		lgLCDDevice.init();
 		lgLCDDevice.connect();
 	}
@@ -953,5 +953,63 @@ public class LgLCDTest {
 		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
 		statistics = extendedStatistic.getStatistics();
 		Assertions.assertNotNull(statistics);
+	}
+
+	/**
+	 * Test change volume value is 0 and Mute will be switch off
+	 *
+	 * Expected change volume successfully and mute property is switch off
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testChangeVolumeAndMuteIsOn() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgLCDConstants.MUTE;
+		String value = "1";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+		Assertions.assertEquals("1", statistics.get(LgLCDConstants.SOUND + LgLCDConstants.HASH + "Mute"));
+
+		property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgLCDConstants.VOLUME;
+		value = "0";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+		Assertions.assertEquals("0", statistics.get(LgLCDConstants.SOUND + LgLCDConstants.HASH + "Mute"));
+	}
+
+	/**
+	 * Test change volume value is greater than 0 and Mute will be switch on
+	 * Expected change volume successfully and mute property is switch on
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testChangeVolumeAndMuteIsOff() throws Exception {
+		lgLCDDevice.setConfigManagement("true");
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		Map<String, String> statistics = extendedStatistic.getStatistics();
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+		String property = LgLCDConstants.SOUND + LgLCDConstants.HASH + LgLCDConstants.VOLUME;
+		String value = "10";
+		controllableProperty.setProperty(property);
+		controllableProperty.setValue(value);
+		lgLCDDevice.controlProperty(controllableProperty);
+
+		extendedStatistic = (ExtendedStatistics) lgLCDDevice.getMultipleStatistics().get(0);
+		statistics = extendedStatistic.getStatistics();
+		Assertions.assertEquals(value, statistics.get(property));
+		Assertions.assertEquals("0", statistics.get(LgLCDConstants.SOUND + LgLCDConstants.HASH + "Mute"));
 	}
 }

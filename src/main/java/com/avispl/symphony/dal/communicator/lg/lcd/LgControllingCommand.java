@@ -54,7 +54,8 @@ public enum LgControllingCommand {
 	NO_SIGNAL_POWER_OFF(LgLCDConstants.NO_SIGNAL_POWER_OFF, false, true, LgLCDConstants.commandNames.NO_SIGNAL_POWER_OFF),
 	NO_IR_POWER_OFF(LgLCDConstants.NO_IR_POWER_OFF, false, true, LgLCDConstants.commandNames.NO_IR_POWER_OFF),
 	LANGUAGE(LgLCDConstants.LANGUAGE, false, true, LgLCDConstants.commandNames.LANGUAGE),
-	POWER_ON_STATUS(LgLCDConstants.POWER_ON_STATUS, false, true, LgLCDConstants.commandNames.POWER_ON_STATUS);
+	POWER_ON_STATUS(LgLCDConstants.POWER_ON_STATUS, false, true, LgLCDConstants.commandNames.POWER_ON_STATUS),
+	REBOOT(LgLCDConstants.REBOOT, false, false, LgLCDConstants.commandNames.REBOOT);
 
 	private final String name;
 	private final boolean isMonitorType;
