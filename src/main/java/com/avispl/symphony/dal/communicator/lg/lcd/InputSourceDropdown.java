@@ -10,7 +10,8 @@ import java.util.Arrays;
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 1/4/2023
- * @since 1.0.0
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public enum InputSourceDropdown {
 

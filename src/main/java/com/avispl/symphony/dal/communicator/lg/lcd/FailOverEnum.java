@@ -9,7 +9,8 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 12/1/2022
- * @since 1.0.0
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public enum FailOverEnum {
 

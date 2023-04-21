@@ -75,8 +75,8 @@ import com.avispl.symphony.dal.util.StringUtils;
  * <li> Temperature </li>
  *
  * @author Harry, Kevin
- * @version 1.4
- * @since 1.4
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public class LgLCDDevice extends SocketCommunicator implements Controller, Monitorable {
 
@@ -484,10 +484,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						String volumeValue = String.valueOf((int) Float.parseFloat(value));
 						stats.put(group + LgLCDConstants.VOLUME_VALUE, volumeValue);
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.VOLUME, volumeValue);
-						if (LgLCDConstants.ZERO != (int) Float.parseFloat(value)) {
-							updateValueForTheControllableProperty(group + LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.ZERO), stats, advancedControllableProperties);
-							updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.NUMBER_ONE));
-						}
+						updateValueForTheControllableProperty(group + LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.ZERO), stats, advancedControllableProperties);
+						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.MUTE, String.valueOf(LgLCDConstants.ZERO));
 						break;
 					case MUTE:
 						String mute = LgLCDConstants.UNMUTE_VALUE;
@@ -523,12 +521,12 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						break;
 					case POWER_MANAGEMENT_MODE:
 						dataConvert = LgLCDConstants.BYTE_COMMAND + EnumTypeHandler.getValueOfEnumByName(PowerManagementModeEnum.class, value);
-						sendRequestToControlValue(commandNames.POWER_MANAGEMENT_MODE, dataConvert.getBytes(StandardCharsets.UTF_8), false, value);
+						sendRequestToControlValue(commandNames.POWER_MANAGEMENT_MODE, dataConvert.getBytes(StandardCharsets.UTF_8), true, value);
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.POWER_MANAGEMENT_MODE, value);
 						break;
 					case DISPLAY_STAND_BY_MODE:
 						dataConvert = EnumTypeHandler.getValueOfEnumByName(PowerManagement.class, value);
-						sendRequestToControlValue(commandNames.DISPLAY_STAND_BY_MODE, dataConvert.getBytes(StandardCharsets.UTF_8), false, value);
+						sendRequestToControlValue(commandNames.DISPLAY_STAND_BY_MODE, dataConvert.getBytes(StandardCharsets.UTF_8), true, value);
 						if (LgLCDConstants.OFF.equalsIgnoreCase(value)) {
 							stats.put(LgLCDConstants.DISPLAY_STAND_BY_MODE, LgLCDConstants.OFF);
 						} else {
@@ -613,10 +611,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 								stats.put(group + entry.getKey(), entry.getValue());
 							}
 							stats.put(group + LgLCDConstants.PRIORITY_UP, LgLCDConstants.EMPTY_STRING);
-							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.UPPING, 0));
+							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.PROCESSING, 0));
 
 							stats.put(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
-							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
+							advancedControllableProperties.add(createButton(group + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.PROCESSING, 0));
 
 							String[] inputSelected = cacheMapOfPriorityInputAndValue.values().stream().filter(item -> !item.equalsIgnoreCase(LgLCDConstants.PLAY_VIA_URL)).collect(Collectors.toList())
 									.toArray(new String[0]);
@@ -784,10 +782,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NATURAL_MODE, String.valueOf(Integer.parseInt(paramNatural)));
 						break;
 					case BALANCE:
-						int balance = (int) Float.parseFloat(value);
-						sendRequestToControlValue(lgControllingCommand.getCommandNames(), Integer.toHexString(balance).getBytes(StandardCharsets.UTF_8), false, value);
-						stats.put(group + LgLCDConstants.BALANCE_VALUE, String.valueOf(balance));
-						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.BALANCE, String.valueOf(balance));
+						String balance = EnumTypeHandler.getValueOfEnumByName(Balance.class, value);
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), balance.getBytes(StandardCharsets.UTF_8), true, value);
+						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.BALANCE, balance);
 						break;
 					case BRIGHTNESS:
 						int brightness = (int) Float.parseFloat(value);
@@ -824,24 +821,23 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.SHARPNESS, String.valueOf(sharpness));
 						break;
 					case TINT:
-						int tint = (int) Float.parseFloat(value);
-						sendRequestToControlValue(lgControllingCommand.getCommandNames(), Integer.toHexString(tint).getBytes(StandardCharsets.UTF_8), false, value);
-						stats.put(group + LgLCDConstants.TINT_VALUE, String.valueOf(tint));
-						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TINT, String.valueOf(tint));
+						String tint = EnumTypeHandler.getValueOfEnumByName(Tint.class, value);
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), tint.getBytes(StandardCharsets.UTF_8), true, value);
+						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TINT, tint);
 						break;
 					case ASPECT_RATIO:
 						String aspectRatio = EnumTypeHandler.getValueOfEnumByName(AspectRatio.class, value);
-						sendRequestToControlValue(lgControllingCommand.getCommandNames(), aspectRatio.getBytes(StandardCharsets.UTF_8), false, value);
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), aspectRatio.getBytes(StandardCharsets.UTF_8), true, value);
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.ASPECT_RATIO, value);
 						break;
 					case BRIGHTNESS_CONTROL:
 						String brightnessSize = EnumTypeHandler.getValueOfEnumByName(BrightnessSize.class, value);
-						sendRequestToControlValue(lgControllingCommand.getCommandNames(), brightnessSize.getBytes(StandardCharsets.UTF_8), false, value);
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), brightnessSize.getBytes(StandardCharsets.UTF_8), true, value);
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.BRIGHTNESS_CONTROL, value);
 						break;
 					case LANGUAGE:
 						String language = EnumTypeHandler.getValueOfEnumByName(Language.class, value);
-						sendRequestToControlValue(lgControllingCommand.getCommandNames(), language.getBytes(StandardCharsets.UTF_8), false, value);
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), language.getBytes(StandardCharsets.UTF_8), true, value);
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.LANGUAGE, value);
 						break;
 					case SOUND_MODE:
@@ -872,6 +868,10 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						} else {
 							updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.NO_SIGNAL_POWER_OFF, powerValue);
 						}
+						break;
+					case REBOOT:
+						String rebootValue = LgLCDConstants.REBOOT_VALUE;
+						sendRequestToControlValue(lgControllingCommand.getCommandNames(), rebootValue.getBytes(StandardCharsets.UTF_8), false, rebootValue);
 						break;
 					default:
 						logger.debug(String.format("Property name %s doesn't support", propertyKey));
@@ -912,12 +912,14 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				populateMonitoringAndControllingData();
 				//destroy channel after collecting all device's information
 				destroyChannel();
-				if (!isFirstInit) {
-					isFirstInit = true;
+				if (!isFirstInit && currentGetMultipleInPollingInterval < pollingIntervalInIntValue) {
 					return Collections.singletonList(localExtendedStatistics);
 				}
-				if (localCachedFailedMonitor == currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
+				//We will check if the value of localCachedFailedMonitor is greater than or equal to the value of currentCommandIndex,
+				// as we have 36 properties by default and if all options are enabled, then we have a total of 37 properties.
+				if (localCachedFailedMonitor >= currentCommandIndex && currentGetMultipleInPollingInterval == pollingIntervalInIntValue) {
 					//Handle the case where all properties receive an error response and the case where 2 connections run in parallel to the device
+					ping();
 					isFirstInit = false;
 					statistics.put(LgLCDConstants.CONTROL_PROTOCOL_STATUS, LgLCDConstants.UNAVAILABLE);
 					countControlUnavailable++;
@@ -926,6 +928,7 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						localCachingLifeTimeOfMap.clear();
 					}
 				} else {
+					isFirstInit = true;
 					populateMonitoringData(statistics, dynamicStatistics);
 					if (isConfigManagement) {
 						populateControllingData(controlStatistics, advancedControllableProperties);
@@ -981,16 +984,16 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 		}
 		if (!currentPriority.equals(priorityInputStart) && !currentPriority.equals(priorityInputEnd)) {
 			stats.put(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.EMPTY_STRING);
-			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.UPPING, 0));
+			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.PROCESSING, 0));
 
 			stats.put(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
-			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
+			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.PROCESSING, 0));
 		} else if (!StringUtils.isNullOrEmpty(priorityInputEnd) && !currentPriority.equals(priorityInputEnd)) {
 			stats.put(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.EMPTY_STRING);
-			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.DOWNING, 0));
+			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_DOWN, LgLCDConstants.DOWN, LgLCDConstants.PROCESSING, 0));
 		} else {
 			stats.put(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.EMPTY_STRING);
-			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.UPPING, 0));
+			advancedControllableProperties.add(createButton(groupName + LgLCDConstants.PRIORITY_UP, LgLCDConstants.UP, LgLCDConstants.PROCESSING, 0));
 		}
 	}
 
@@ -1027,11 +1030,11 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 			}
 			if ((controllingCommand.isControlType() || controllingCommand.isMonitorType())) {
 				commandNames param = getParamByCommandName(controllingCommand);
+				//Count the number of requests in one polling cycle.
+				currentCommandIndex++;
 				if (param == null) {
 					continue;
 				}
-				//Count the number of requests in one polling cycle.
-				currentCommandIndex++;
 				//Submit thread to fetch data
 				devicesExecutionPool.add(fetchingDataExSer.submit(() -> {
 					retrieveDataByCommandName(controllingCommand.getCommandNames(), param, controllingCommand);
@@ -1324,6 +1327,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				}
 				AdvancedControllableProperty controlPower = controlSwitch(controlStatistics, LgLCDConstants.POWER, value, LgLCDConstants.OFF, LgLCDConstants.ON);
 				checkControlPropertyBeforeAddNewProperty(controlPower, advancedControllableProperties);
+
+				controlStatistics.put(LgLCDConstants.REBOOT, LgLCDConstants.EMPTY_STRING);
+				advancedControllableProperties.add(createButton(LgLCDConstants.REBOOT, LgLCDConstants.REBOOT, LgLCDConstants.PROCESSING, 0));
 				break;
 			case ASPECT_RATIO:
 				value = getValueByName(LgLCDConstants.ASPECT_RATIO);
@@ -1374,9 +1380,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				break;
 			case TINT:
 				value = getValueByName(LgLCDConstants.TINT);
-				getDefaultValueForNullValue(value, controlStatistics, displayGroupName + LgLCDConstants.TINT_VALUE);
-				AdvancedControllableProperty controlTint = createControlSlider(displayGroupName + LgLCDConstants.TINT, value, controlStatistics, String.valueOf(LgLCDConstants.ZERO),
-						String.valueOf(LgLCDConstants.MAX_RANGE_TINT));
+				String[] tintDropdown = EnumTypeHandler.getEnumNames(Tint.class);
+				String tintValue = EnumTypeHandler.getNameEnumByValue(Tint.class, value);
+				AdvancedControllableProperty controlTint = controlDropdown(controlStatistics, tintDropdown, displayGroupName + LgLCDConstants.TINT, tintValue);
 				checkControlPropertyBeforeAddNewProperty(controlTint, advancedControllableProperties);
 				break;
 			case COLOR_TEMPERATURE:
@@ -1393,9 +1399,9 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 				break;
 			case BALANCE:
 				value = getValueByName(LgLCDConstants.BALANCE);
-				getDefaultValueForNullValue(value, controlStatistics, soundGroupName + LgLCDConstants.BALANCE_VALUE);
-				AdvancedControllableProperty controlBalance = createControlSlider(soundGroupName + LgLCDConstants.BALANCE, value, controlStatistics, String.valueOf(LgLCDConstants.ZERO),
-						String.valueOf(LgLCDConstants.MAX_RANGE_BALANCE));
+				String[] balanceDropdown = EnumTypeHandler.getEnumNames(Balance.class);
+				String balanceValue = EnumTypeHandler.getNameEnumByValue(Balance.class, value);
+				AdvancedControllableProperty controlBalance = controlDropdown(controlStatistics, balanceDropdown, soundGroupName + LgLCDConstants.BALANCE, balanceValue);
 				checkControlPropertyBeforeAddNewProperty(controlBalance, advancedControllableProperties);
 				break;
 			case SOUND_MODE:
@@ -1945,9 +1951,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						return tint;
 					case TINT:
 						reply = Arrays.copyOfRange(response, 7, 9);
-						String tintValue = String.valueOf(Integer.parseInt(convertByteToValue(reply), 16));
-						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TINT, tintValue);
-						return tintValue;
+						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.TINT, convertByteToValue(reply));
+						return reply;
 					case COLOR_TEMPERATURE:
 						reply = Arrays.copyOfRange(response, 7, 9);
 						String colorTemperature = String.valueOf(Integer.parseInt(convertByteToValue(reply), 16));
@@ -1955,9 +1960,8 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						return colorTemperature;
 					case BALANCE:
 						reply = Arrays.copyOfRange(response, 7, 9);
-						String balance = String.valueOf(Integer.parseInt(convertByteToValue(reply), 16));
-						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.BALANCE, balance);
-						return balance;
+						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.BALANCE, convertByteToValue(reply));
+						return reply;
 					case SOUND_MODE:
 						String soundModeValue = EnumTypeHandler.getNameEnumByValue(SoundMode.class, convertByteToValue(reply));
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.SOUND_MODE, soundModeValue);
@@ -1988,6 +1992,13 @@ public class LgLCDDevice extends SocketCommunicator implements Controller, Monit
 						String powerOnStatus = EnumTypeHandler.getNameEnumByValue(PowerStatus.class, convertByteToValue(reply));
 						updateCachedDeviceData(localCacheMapOfPropertyNameAndValue, LgLCDConstants.POWER_ON_STATUS, powerOnStatus);
 						return powerOnStatus;
+					case REBOOT:
+						reply = Arrays.copyOfRange(response, 7, 9);
+						String rebootValue = convertByteToValue(reply);
+						if (!LgLCDConstants.REBOOT_VALUE.equals(rebootValue)) {
+							throw new ResourceNotReachableException("NG reply");
+						}
+						return rebootValue;
 					default:
 						logger.debug("this command name is not supported" + expectedResponse);
 				}

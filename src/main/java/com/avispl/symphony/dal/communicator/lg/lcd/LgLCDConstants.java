@@ -11,7 +11,8 @@ import java.util.Map;
  *
  * @author Kevin / Symphony Dev Team<br>
  * Created on 30/1/2022
- * @since 1.0.0
+ * @version 1.4.0
+ * @since 1.4.0
  */
 public class LgLCDConstants {
 	enum powerStatusNames {ON, OFF, UNAVAILABLE}
@@ -40,7 +41,7 @@ public class LgLCDConstants {
 	enum commandNames {
 		SYNC_STATUS_PARAM, POWER, INPUT, TEMPERATURE, FAN_STATUS, SYNC_STATUS, GET, SERIAL_NUMBER, SOFTWARE_VERSION, FAILOVER, DATE, TIME, TILE_MODE_SETTINGS, DISPLAY_STAND_BY_MODE, DISPLAY_AND_SOUND, BACKLIGHT, INPUT_SELECT, MUTE, VOLUME,
 		POWER_MANAGEMENT_MODE, POWER_MANAGEMENT_MODE_PARAM, FAILOVER_INPUT_LIST, NETWORK_SETTING, NETWORK_SETTING_PARAM, TILE_ID, NATURAL_MODE, NATURAL_SIZE, NATURAL_SIZE_PARAM, TILE_MODE_CONTROL,
-		ASPECT_RATIO, BRIGHTNESS_CONTROL, CONTRAST, PICTURE_MODE, BRIGHTNESS, SHARPNESS, SCREEN_COLOR, TINT, COLOR_TEMPERATURE, BALANCE, SOUND_MODE, NO_SIGNAL_POWER_OFF, NO_IR_POWER_OFF, LANGUAGE, POWER_ON_STATUS;
+		ASPECT_RATIO, BRIGHTNESS_CONTROL, CONTRAST, PICTURE_MODE, BRIGHTNESS, SHARPNESS, SCREEN_COLOR, TINT, COLOR_TEMPERATURE, BALANCE, SOUND_MODE, NO_SIGNAL_POWER_OFF, NO_IR_POWER_OFF, LANGUAGE, POWER_ON_STATUS, REBOOT;
 	}
 
 	final static Map<commandNames, byte[]> commands = new HashMap<commandNames, byte[]>() {{
@@ -87,6 +88,7 @@ public class LgLCDConstants {
 		put(commandNames.LANGUAGE, new byte[] { 'f', 'i' });
 		put(commandNames.POWER_ON_STATUS, new byte[] { 't', 'r' });
 		put(commandNames.SYNC_STATUS_PARAM, new byte[] { '0', '2', ' ', 'F', 'F' });
+		put(commandNames.REBOOT, new byte[] { 'k', 'a' });
 	}};
 
 	final static byte[] signalStatus = { '0', '2', ' ', 'F', 'F' };
@@ -131,6 +133,8 @@ public class LgLCDConstants {
 	enum controlProperties {power, input}
 
 	public static String POWER = "Power";
+	public static String REBOOT = "Reboot";
+	public static String REBOOT_VALUE = "02";
 	public static String FAN = "Fan";
 	public static String INPUT = "Input";
 	public static String TEMPERATURE = "Temperature(C)";
@@ -153,8 +157,8 @@ public class LgLCDConstants {
 	public static String POWER_MANAGEMENT = "PowerManagement";
 	public static String FAILOVER = "FailOver";
 	public static String HASH = "#";
-	public static String BACKLIGHT = "BackLight(%)";
-	public static String BACKLIGHT_VALUE = "BacklightCurrentValue(%)";
+	public static String BACKLIGHT = "Backlight";
+	public static String BACKLIGHT_VALUE = "BacklightCurrentValue";
 	public static String INPUT_SELECT = "InputSelect";
 	public static String FAILOVER_INPUT_LIST = "InputList";
 	public static String MUTE = "Mute";
@@ -172,7 +176,6 @@ public class LgLCDConstants {
 	public static int MAX_RANGE_BRIGHTNESS = 100;
 	public static int MAX_RANGE_SHARPNESS = 50;
 	public static int MAX_RANGE_SCREEN_COLOR = 100;
-	public static int MAX_RANGE_TINT = 100;
 	public static int MAX_RANGE_BALANCE = 100;
 	public static int MIN_RANGE_COLOR_TEMPERATURE = 3200;
 	public static int MAX_RANGE_COLOR_TEMPERATURE = 13000;
@@ -186,10 +189,9 @@ public class LgLCDConstants {
 	public static String PRIORITY = "Priority";
 	public static String PRIORITY_INPUT = "PriorityInput";
 	public static String PRIORITY_DOWN = "PriorityDown";
-	public static String UPPING = "Upping";
+	public static String PROCESSING = "Processing";
 	public static String UP = "Up";
 	public static String PRIORITY_UP = "PriorityUp";
-	public static String DOWNING = "Downing";
 	public static String DOWN = "Down";
 	public static String MANUAL = "Manual";
 	public static String HDMI_1 = "HDMI1";
@@ -220,11 +222,9 @@ public class LgLCDConstants {
 	public static String SCREEN_COLOR = "ScreenColor";
 	public static String SCREEN_COLOR_VALUE = "ScreenColorCurrentValue";
 	public static String TINT = "Tint";
-	public static String TINT_VALUE = "TintCurrentValue";
 	public static String COLOR_TEMPERATURE = "ColorTemperature(K)";
 	public static String COLOR_TEMPERATURE_VALUE = "ColorTemperatureCurrentValue(K)";
 	public static String BALANCE = "Balance";
-	public static String BALANCE_VALUE = "BalanceCurrentValue";
 	public static String SOUND_MODE = "SoundMode";
 	public static String NO_SIGNAL_POWER_OFF = "NoSignalPowerOff(15Min)";
 	public static String NO_IR_POWER_OFF = "NoIRPowerOff(4hour)";
@@ -255,5 +255,4 @@ public class LgLCDConstants {
 	public static int MAX_CONFIG_TIMEOUT = 3000;
 	public static int DEFAULT_POLLING_INTERVAL = 2;
 	public static int ORDINAL_TO_INDEX_CONVERT_FACTOR = 1;
-
 }
