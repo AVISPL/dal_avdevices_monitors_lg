@@ -6,6 +6,14 @@ package com.avispl.symphony.dal.communicator.lg.lcd;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class support build String to byte
+ *
+ * @author Kevin / Symphony Dev Team<br>
+ * Created on 30/1/2022
+ * @version 1.4.0
+ * @since 1.4.0
+ */
 public class LgLCDUtils {
 
 	static byte[] buildSendString(byte monitorID, byte[] command, byte[] param) {
